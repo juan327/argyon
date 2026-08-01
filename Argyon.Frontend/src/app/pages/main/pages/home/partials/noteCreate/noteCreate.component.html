@@ -1,0 +1,230 @@
+<form id="formNoteCreate" class="flex flex-col gap-2.5" (submit)="this.OnSubmit($event)">
+    <div class="flex flex-col gap-4">
+        <div class="form-field">
+            <p-iftalabel>
+                <p-treeselect name="parentFolder" [(ngModel)]="this._selectedFolder" [options]="this._folderTree()"
+                    [placeholder]="'noteCreate.noFolder' | translate" fluid appendTo="body" [filter]="true"
+                    filterBy="label,data" [filterPlaceholder]="'noteCreate.searchFolder' | translate"
+                    (onNodeSelect)="this.onSelectFolder($event)" (onNodeUnselect)="this.onUnselectFolder()">
+                    <ng-template #value let-node let-placeholder="placeholder">
+                        @if (node) {
+                        <span>{{node.data}}</span>
+                        }
+                        @else {
+                        <span>{{placeholder}}</span>
+                        }
+                    </ng-template>
+                </p-treeselect>
+                <label for="">{{ 'noteCreate.folder' | translate }}</label>
+            </p-iftalabel>
+        </div>
+        <div class="form-field">
+            <component-inputText [formField]="this._mainSignal.name" [label]="'noteCreate.name' | translate" />
+        </div>
+
+        <div class="form-field">
+            <p-iftalabel>
+                <component-inputAutocomplete [initialValue]="this._mainForm().tags"
+                    (onValueChange)="this.updateTags($event)" />
+                <label for="">{{ 'noteCreate.tags' | translate }}</label>
+            </p-iftalabel>
+            @if (this._tagsMaxChars() !== null) {
+                <span class="text-xs" [class]="this._tagsExceeded() ? 'text-red-500' : 'text-(--p-text-muted-color)'">
+                    {{ this._mainForm().tags.length }}/{{ this._tagsMaxChars() }}
+                </span>
+            }
+        </div>
+
+        <div class="form-field">
+            <component-inputTextArea [formField]="this._mainSignal.description" [label]="'noteCreate.description' | translate" />
+        </div>
+    </div>
+
+    @if (!this.isFolder() && this._dataKbMaxLimit() !== null) {
+    <span class="text-xs" [class]="this._dataKbLimitExceeded() ? 'text-red-500' : 'text-(--p-text-muted-color)'">
+        {{ 'noteCreate.dataSizeEstimate' | translate: { size: (this._dataKbEstimate() | number: '1.0-1'), max: this._dataKbMaxLimit() } }}
+        @if (this._dataKbLimitExceeded()) {
+            {{ 'noteCreate.dataSizeEstimateExceeded' | translate }}
+        }
+    </span>
+    }
+
+    @if (this._mainForm().data.length > 0 || this._editMode()) {
+    <p-tabs [value]="this._activeCategoryTab()" (valueChange)="this.onCategoryTabChange($event)" scrollable>
+        <p-tablist>
+            @for (categoryData of this._mainSignal.data; track $index) {
+            @let category = categoryData().value();
+            <p-tab [value]="category.id" class="flex items-center gap-2.5">
+                <span>{{category.name}}</span>
+                @if (this._editMode()) {
+                <div class="flex flex-row items-center gap-1.5" (click)="$event.stopPropagation()">
+                    <component-button type="button" icon="pi pi-pencil" severity="secondary" size="small" width="auto"
+                        [rounded]="true" (onClick)="this.openEditCategoryModal(category)" />
+                    <component-button type="button" icon="pi pi-trash" severity="danger" size="small" width="auto"
+                        [rounded]="true" (onClick)="this.confirmRemoveCategory(category)" />
+                </div>
+                }
+            </p-tab>
+            }
+            @if (this._editMode()) {
+            <p-tab [value]="this.addCategoryTabValue" class="flex-none justify-center min-w-10 px-3">
+                <i class="pi pi-plus"></i>
+            </p-tab>
+            }
+        </p-tablist>
+        <p-tabpanels>
+            @for (categoryData of this._mainSignal.data; track $index) {
+            @let category = categoryData().value();
+            <p-tabpanel [value]="category.id">
+                <div class="flex flex-col gap-4">
+                    @for (noteData of categoryData.data; track $index) {
+                    @let note = noteData().value();
+                    <div class="form-field">
+                        @if (this._editMode()) {
+                        <div class="flex flex-row items-center justify-end gap-1.5">
+                            <component-button type="button" icon="pi pi-pencil" severity="secondary" size="small"
+                                width="auto" [rounded]="true"
+                                (onClick)="this.openEditFieldModal(category, $index)" />
+                            <component-button type="button" icon="pi pi-trash" severity="danger" size="small"
+                                width="auto" [rounded]="true"
+                                (onClick)="this.confirmRemoveNote(category, $index)" />
+                        </div>
+                        }
+                        @if (note.Type === this.noteDataType.Password) {
+                        <component-inputPassword [(value)]="note.value" [label]="note.label"
+                            (onCopy)="this.copyFieldValue(note.value)" [disableSpace]="true" [showCopyButton]="true"
+                            [showGenerateButton]="true" />
+                        }
+                        @else if (note.Type === this.noteDataType.TextArea) {
+                        <component-inputTextArea [formField]="noteData.value" [label]="note.label" />
+                        }
+                        @else if (this.noteDateTypes.includes(note.Type)) {
+                        <component-inputDatePicker [(value)]="note.value" [dateDay]="note.dateDay ?? true"
+                            [dateMonth]="note.dateMonth ?? true" [dateYear]="note.dateYear ?? true"
+                            [dateHour]="note.dateHour ?? false" [label]="note.label" [showCopyButton]="true"
+                            (onCopy)="this.copyFieldValue(note.value)" />
+                        }
+                        @else if (this.noteMaskTypes.includes(note.Type)) {
+                        <component-inputMask [(value)]="note.value" [mask]="this.getMask(note.Type)" [label]="note.label"
+                            [showCopyButton]="true" (onCopy)="this.copyFieldValue(note.value)" />
+                        }
+                        @else {
+                        <component-inputText [formField]="noteData.value" [label]="note.label"
+                            [showCopyButton]="true" (onCopy)="this.copyFieldValue(note.value)" />
+                        }
+                    </div>
+                    }
+                    @if (this._editMode()) {
+                    <component-button type="button" [label]="'noteCreate.addField' | translate" icon="pi pi-plus-circle"
+                        severity="info" (onClick)="this.openAddFieldModal(category)" />
+                    }
+                </div>
+            </p-tabpanel>
+            }
+        </p-tabpanels>
+    </p-tabs>
+    }
+
+    <ng-template #footer>
+        <div class="flex items-center justify-between gap-2.5 mt-1 w-full">
+            <div class="flex items-center gap-2.5">
+                <component-button type="button" [icon]="this._isFavorite() ? 'pi pi-star-fill' : 'pi pi-star'" width="auto"
+                    [severity]="this._isFavorite() ? 'warn' : 'secondary'"
+                    [tooltip]="(this._isFavorite() ? 'noteCreate.removeFromFavorites' : 'noteCreate.addToFavorites') | translate"
+                    (onClick)="this.toggleFavorite()" />
+                @if (!this.isFolder()) {
+                <component-button type="button" icon="pi pi-objects-column" width="auto"
+                    [severity]="this._editMode() ? 'warn' : 'secondary'"
+                    [tooltip]="(this._editMode() ? 'noteCreate.disableLayoutMode' : 'noteCreate.enableLayoutMode') | translate"
+                    (onClick)="this.toggleEditMode()" />
+                }
+            </div>
+            <div class="flex flex-wrap gap-2.5 justify-end">
+                <component-button type="button" [label]="'common.cancel' | translate" severity="secondary" width="auto"
+                    (onClick)="this.requestCancel()" />
+                <component-button type="button" [disabled]="this._mainSignal().invalid() || this._tagsExceeded()" severity="success"
+                    width="auto" [label]="(this._action === 'edit' ? 'common.edit' : 'common.create') | translate"
+                    (onClick)="this.OnSubmit()" />
+            </div>
+        </div>
+    </ng-template>
+</form>
+
+@if (this._fieldModalOpen()) {
+<component-dialog (open)="this._fieldModalOpen.set($event)" [small]="true">
+    <ng-template #header>
+        <span>{{ (this._fieldModalMode() === 'add' ? 'noteCreate.addFieldModalTitle' : 'noteCreate.editFieldModalTitle')
+            | translate }}</span>
+    </ng-template>
+
+    <div class="flex flex-col gap-4">
+        <div class="form-field">
+            <component-inputText [(value)]="this._fieldLabelInput" [label]="'noteCreate.label' | translate" />
+        </div>
+        <div class="form-field">
+            <p-iftalabel>
+                <p-select [(ngModel)]="this._fieldTypeInput" [options]="this._fieldTypeOptions()" optionLabel="label"
+                    optionValue="value" fluid appendTo="body" />
+                <label for="">{{ 'noteCreate.type' | translate }}</label>
+            </p-iftalabel>
+        </div>
+        @if (this._fieldTypeInput() === this.noteDataType.Date) {
+        <div class="form-field">
+            <span>{{ 'noteCreate.dateFieldParts' | translate }}</span>
+            <div class="flex flex-col gap-2 mt-2">
+                <div class="flex items-center gap-2">
+                    <p-checkbox [ngModel]="this._fieldDateDay()" [binary]="true" (onChange)="this.toggleFieldDateDay()"
+                        inputId="fieldDateDay" />
+                    <label for="fieldDateDay" style="cursor: pointer;">{{ 'noteCreate.dateDay' | translate }}</label>
+                </div>
+                <div class="flex items-center gap-2">
+                    <p-checkbox [ngModel]="this._fieldDateMonth()" [binary]="true" [disabled]="this._fieldDateDay()"
+                        (onChange)="this.toggleFieldDateMonth()" inputId="fieldDateMonth" />
+                    <label for="fieldDateMonth" style="cursor: pointer;">{{ 'noteCreate.dateMonth' | translate }}</label>
+                </div>
+                <div class="flex items-center gap-2">
+                    <p-checkbox [ngModel]="this._fieldDateYear()" [binary]="true"
+                        [disabled]="this._fieldDateDay() || this._fieldDateMonth()" (onChange)="this.toggleFieldDateYear()"
+                        inputId="fieldDateYear" />
+                    <label for="fieldDateYear" style="cursor: pointer;">{{ 'noteCreate.dateYear' | translate }}</label>
+                </div>
+                <div class="flex items-center gap-2">
+                    <p-checkbox [ngModel]="this._fieldDateHour()" [binary]="true" (onChange)="this.toggleFieldDateHour()"
+                        inputId="fieldDateHour" />
+                    <label for="fieldDateHour" style="cursor: pointer;">{{ 'noteCreate.dateHour' | translate }}</label>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+
+    <ng-template #footer>
+        <component-button type="button" [label]="'common.cancel' | translate" severity="secondary"
+            (onClick)="this.closeFieldModal()" />
+        <component-button type="button" [label]="'common.save' | translate" severity="success"
+            (onClick)="this.saveFieldModal()" />
+    </ng-template>
+</component-dialog>
+}
+
+@if (this._categoryModalOpen()) {
+<component-dialog (open)="this._categoryModalOpen.set($event)" [small]="true">
+    <ng-template #header>
+        <span>{{ (this._categoryModalMode() === 'add' ? 'noteCreate.addCategoryModalTitle' :
+            'noteCreate.editCategoryModalTitle') | translate }}</span>
+    </ng-template>
+
+    <div class="flex flex-col gap-4">
+        <div class="form-field">
+            <component-inputText [(value)]="this._categoryNameInput" [label]="'noteCreate.name' | translate" />
+        </div>
+    </div>
+
+    <ng-template #footer>
+        <component-button type="button" [label]="'common.cancel' | translate" severity="secondary"
+            (onClick)="this.closeCategoryModal()" />
+        <component-button type="button" [label]="'common.save' | translate" severity="success"
+            (onClick)="this.saveCategoryModal()" />
+    </ng-template>
+</component-dialog>
+}

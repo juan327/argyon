@@ -1,0 +1,243 @@
+<section class="w-full flex flex-col items-stretch gap-5">
+    <p-card>
+        <p-table [value]="this.usersWithActionsMenu()" [loading]="this.loading()" dataKey="id" tableStyleClass="w-full" [tableStyle]="{ width: '100%' }"
+            [lazy]="true" (onLazyLoad)="this.OnLazyLoad($event)" [paginator]="true" [rows]="this.rows()"
+            [rowsPerPageOptions]="[5, 10, 20, 50]" [first]="this.tableFirst()" [totalRecords]="this.totalRecords()"
+            [showCurrentPageReport]="true" [currentPageReportTemplate]="'users.pageReportTemplate' | translate" stripedRows [rowHover]="true" paginatorPosition="both">
+            <ng-template #caption>
+                <div class="flex items-center justify-between flex-wrap gap-3 py-1">
+                    <p-inputgroup class="max-w-80 flex-[1_1_240px]">
+                        <p-inputgroup-addon>
+                            <i class="pi pi-search"></i>
+                        </p-inputgroup-addon>
+                        <input pInputText type="text" [placeholder]="'users.searchPlaceholder' | translate"
+                            [ngModel]="this.searchText()" (ngModelChange)="this.OnSearchTextChange($event)" />
+                    </p-inputgroup>
+                    @if (this.authService.canCreateUsers()) {
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <component-button [label]="'users.createUser' | translate" severity="success" (onClick)="this.onOpenCreateUserModal()" icon="pi pi-user-plus" />
+                        </div>
+                    }
+                </div>
+            </ng-template>
+            <ng-template #header>
+                <tr>
+                    <th>{{ 'common.username' | translate }}</th>
+                    <th>{{ 'users.roleColumn' | translate }}</th>
+                    <th>{{ 'users.statusColumn' | translate }}</th>
+                    <th>{{ 'users.createdAtColumn' | translate }}</th>
+                    @if (this.authService.canViewUsersModule()) {
+                        <th></th>
+                    }
+                </tr>
+            </ng-template>
+            <ng-template #body let-user>
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>
+                        <p-tag [value]="this.RoleLabel(user.roleCode)" [severity]="this.RoleSeverity(user.roleCode)" />
+                    </td>
+                    <td>
+                        @if (user.isBlocked) {
+                            <p-tag [value]="'users.blocked' | translate" severity="danger" />
+                        } @else {
+                            <p-tag [value]="'users.active' | translate" severity="success" />
+                        }
+                    </td>
+                    <td>{{ user.createdAt | date: this.settingsService.dateTimeFormat() }}</td>
+                    @if (this.authService.canViewUsersModule()) {
+                        <td class="flex gap-2.5">
+                            @if (this.authService.canManageUsers()) {
+                                <p-splitbutton [label]="(user.isBlocked ? 'users.unblock' : 'users.block') | translate"
+                                    [severity]="user.isBlocked ? 'success' : 'warn'" size="small"
+                                    (onClick)="this.onToggleBlocked(user)" [model]="user.actionsMenu" />
+                            } @else {
+                                <component-button [label]="(user.isBlocked ? 'users.unblock' : 'users.block') | translate"
+                                    [severity]="user.isBlocked ? 'success' : 'warn'" size="small"
+                                    (onClick)="this.onToggleBlocked(user)" />
+                            }
+                        </td>
+                    }
+                </tr>
+            </ng-template>
+            <ng-template #emptymessage>
+                <tr>
+                    <td [attr.colspan]="this.authService.canViewUsersModule() ? 5 : 4">
+                        <div class="flex flex-col items-center justify-center gap-3 py-12 px-4 text-(--p-text-muted-color)">
+                            <i class="pi pi-inbox text-[2.5rem] opacity-[0.35]"></i>
+                            <p class="text-sm opacity-[0.55]">{{ 'users.noUsers' | translate }}</p>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-card>
+</section>
+
+@if (this.changeRoleModalOpen()) {
+<component-dialog (open)="this.changeRoleModalOpen.set($event)" [small]="true">
+    <ng-template #header>
+        <h2>{{ 'users.changeRoleTitle' | translate: { username: this.changeRoleTarget()?.username } }}</h2>
+    </ng-template>
+
+    <div class="form-content">
+        <div class="form-field">
+            <p-iftalabel>
+                <p-select [(ngModel)]="this.changeRoleSelected" [options]="this.roleOptions()" optionLabel="label"
+                    optionValue="value" fluid appendTo="body" />
+                <label for="">{{ 'users.newRole' | translate }}</label>
+            </p-iftalabel>
+        </div>
+    </div>
+
+    <ng-template #footer>
+        <component-button (onClick)="this.changeRoleModalOpen.set(false)" severity="secondary" [label]="'common.cancel' | translate" />
+        <component-button (onClick)="this.onConfirmChangeRole()" severity="success" [label]="'users.confirm' | translate" />
+    </ng-template>
+</component-dialog>
+}
+
+@if (this.limitsModalOpen()) {
+<component-dialog (open)="this.limitsModalOpen.set($event)" [small]="true">
+    <ng-template #header>
+        <h2>{{ 'users.limitsTitle' | translate: { username: this.limitsTarget()?.username } }}</h2>
+    </ng-template>
+
+    <div class="form-content">
+        <div class="form-field">
+            <p-iftalabel>
+                <p-select [(ngModel)]="this.limitsNotesMode" [options]="this.limitModeOptions()" optionLabel="label"
+                    optionValue="value" fluid appendTo="body" />
+                <label for="">{{ 'users.notesLimit' | translate }}</label>
+            </p-iftalabel>
+            @if (this.limitsNotesMode() === 'custom') {
+                <p-inputnumber [(ngModel)]="this.limitsNotesValue" [min]="0" fluid />
+            }
+        </div>
+
+        <div class="form-field">
+            <p-iftalabel>
+                <p-select [(ngModel)]="this.limitsFoldersMode" [options]="this.limitModeOptions()" optionLabel="label"
+                    optionValue="value" fluid appendTo="body" />
+                <label for="">{{ 'users.foldersLimit' | translate }}</label>
+            </p-iftalabel>
+            @if (this.limitsFoldersMode() === 'custom') {
+                <p-inputnumber [(ngModel)]="this.limitsFoldersValue" [min]="0" fluid />
+            }
+        </div>
+    </div>
+
+    <ng-template #footer>
+        <component-button (onClick)="this.limitsModalOpen.set(false)" severity="secondary" [label]="'common.cancel' | translate" />
+        <component-button (onClick)="this.onConfirmSetLimits()" severity="success" [label]="'users.confirm' | translate" />
+    </ng-template>
+</component-dialog>
+}
+
+@if (this.contentLimitsModalOpen()) {
+<component-dialog (open)="this.contentLimitsModalOpen.set($event)">
+    <ng-template #header>
+        <h2>{{ 'users.contentLimitsTitle' | translate: { username: this.contentLimitsTarget()?.username } }}</h2>
+    </ng-template>
+
+    <div class="form-content">
+        <div class="form-field">
+            <label for="">{{ 'system.nameCharsLimit' | translate }}</label>
+            <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [showInherit]="true" [(value)]="this.contentLimitsNameChars" />
+        </div>
+
+        <div class="form-field">
+            <label for="">{{ 'system.descriptionCharsLimit' | translate }}</label>
+            <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [showInherit]="true" [(value)]="this.contentLimitsDescriptionChars" />
+        </div>
+
+        <div class="form-field">
+            <label for="">{{ 'system.tagsCharsLimit' | translate }}</label>
+            <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [showInherit]="true" [(value)]="this.contentLimitsTagsChars" />
+        </div>
+
+        <div class="form-field">
+            <label for="">{{ 'system.dataSizeLimit' | translate }}</label>
+            <component-presetLimitSelect [presets]="this.kbPresets" [unit]="'kb'" [showInherit]="true" [(value)]="this.contentLimitsDataKb" />
+        </div>
+        <div class="form-field">
+            <label for="">{{ 'system.attachmentSizeLimit' | translate }}</label>
+            <component-presetLimitSelect [presets]="this.kbPresets" [unit]="'kb'" [showInherit]="true" [(value)]="this.contentLimitsAttachmentSizeKb" />
+        </div>
+    </div>
+
+    <ng-template #footer>
+        <component-button (onClick)="this.contentLimitsModalOpen.set(false)" severity="secondary" [label]="'common.cancel' | translate" />
+        <component-button (onClick)="this.onConfirmSetContentLimits()" severity="success" [label]="'users.confirm' | translate" />
+    </ng-template>
+</component-dialog>
+}
+
+@if (this.permissionsModalOpen()) {
+<component-dialog (open)="this.permissionsModalOpen.set($event)" [small]="true">
+    <ng-template #header>
+        <h2>{{ 'users.permissionsTitle' | translate: { username: this.permissionsTarget()?.username } }}</h2>
+    </ng-template>
+
+    <div class="form-content">
+        <div class="form-field">
+            <p-iftalabel>
+                <p-select [(ngModel)]="this.manageNotesMode" [options]="this.permissionModeOptions()" optionLabel="label"
+                    optionValue="value" fluid appendTo="body" />
+                <label for="">{{ 'users.manageNotesPermission' | translate }}</label>
+            </p-iftalabel>
+        </div>
+
+        <div class="form-field">
+            <p-iftalabel>
+                <p-select [(ngModel)]="this.twoFactorMode" [options]="this.permissionModeOptions()" optionLabel="label"
+                    optionValue="value" fluid appendTo="body" />
+                <label for="">{{ 'users.twoFactorPermission' | translate }}</label>
+            </p-iftalabel>
+        </div>
+    </div>
+
+    <ng-template #footer>
+        <component-button (onClick)="this.permissionsModalOpen.set(false)" severity="secondary" [label]="'common.cancel' | translate" />
+        <component-button (onClick)="this.onConfirmSetPermissions()" severity="success" [label]="'users.confirm' | translate" />
+    </ng-template>
+</component-dialog>
+}
+
+@if (this.createUserModalOpen()) {
+<component-dialog (open)="this.createUserModalOpen.set($event)">
+    <ng-template #header>
+        <h2>{{ 'users.createUserModalTitle' | translate }}</h2>
+    </ng-template>
+
+    <div class="form-content">
+        <div class="form-field">
+            <component-inputText [(value)]="this.createUsername" [placeholder]="'users.usernameFieldPlaceholder' | translate" [label]="'common.username' | translate" />
+        </div>
+
+        <div class="form-field">
+            <component-inputPassword [(value)]="this.createPassword" [placeholder]="'users.initialPassword' | translate"
+                [showGenerateButton]="true" [showCopyButton]="true" [label]="'users.initialPassword' | translate" />
+        </div>
+
+        <div class="form-field">
+            <component-inputPassword [(value)]="this.createPasswordConfirmation" [placeholder]="'common.confirmPasswordPlaceholder' | translate" [label]="'common.confirmPassword' | translate" />
+        </div>
+
+        @if (this.authService.currentUser()?.roleCode === this.RoleCode.Owner) {
+            <div class="form-field">
+                <p-iftalabel>
+                    <p-select [(ngModel)]="this.createRoleSelected" [options]="this.roleOptions()" optionLabel="label"
+                        optionValue="value" fluid appendTo="body" />
+                    <label for="">{{ 'users.roleColumn' | translate }}</label>
+                </p-iftalabel>
+            </div>
+        }
+    </div>
+
+    <ng-template #footer>
+        <component-button (onClick)="this.createUserModalOpen.set(false)" severity="secondary" [label]="'common.cancel' | translate" />
+        <component-button (onClick)="this.onConfirmCreateUser()" severity="success" [label]="'common.create' | translate" />
+    </ng-template>
+</component-dialog>
+}

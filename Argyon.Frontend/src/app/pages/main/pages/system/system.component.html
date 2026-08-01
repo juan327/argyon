@@ -1,0 +1,193 @@
+<section class="w-full flex flex-col items-stretch gap-5">
+    <p-tabs value="0">
+        <p-tablist>
+            <p-tab value="0">{{ 'system.generalTab' | translate }}</p-tab>
+            <p-tab value="1">{{ 'system.limitsTab' | translate }}</p-tab>
+            <p-tab value="2">{{ 'system.permissionsTab' | translate }}</p-tab>
+        </p-tablist>
+        <p-tabpanels>
+            <p-tabpanel value="0">
+                <p-card>
+                    <div class="form-content">
+                        <div class="flex items-center gap-2.5">
+                            <p-toggleswitch inputId="registrationEnabled" [ngModel]="this.registrationEnabled()"
+                                (ngModelChange)="this.onToggleRegistrationEnabled($event)" />
+                            <label for="registrationEnabled">{{ 'system.allowPublicRegistration' | translate }}</label>
+                            <component-infoTooltip [text]="'system.registrationDisabledNotice' | translate" />
+                        </div>
+                    </div>
+                </p-card>
+            </p-tabpanel>
+
+            <p-tabpanel value="1">
+                <p-card>
+                    <div class="form-content">
+                        <div class="flex justify-end">
+                            <component-infoTooltip [text]="'system.defaultLimitsNotice' | translate" />
+                        </div>
+
+                        <p-fieldset [legend]="'users.roleAdministrator' | translate">
+                            <div class="form-content">
+                                <div class="form-field">
+                                    <label for="">{{ 'system.notes' | translate }}</label>
+                                    <div class="flex items-center gap-2.5">
+                                        <p-toggleswitch inputId="unlimitedNotesAdministrator" [ngModel]="this.maxNotesAdministrator() === null"
+                                            (ngModelChange)="this.onToggleUnlimited('maxNotesAdministrator', $event)" />
+                                        <label for="unlimitedNotesAdministrator">{{ 'users.limitModeUnlimited' | translate }}</label>
+                                    </div>
+                                    @if (this.maxNotesAdministrator() !== null) {
+                                        <p-inputnumber [(ngModel)]="this.maxNotesAdministrator" [min]="0" fluid />
+                                    }
+                                </div>
+                                <div class="form-field">
+                                    <label for="">{{ 'system.folders' | translate }}</label>
+                                    <div class="flex items-center gap-2.5">
+                                        <p-toggleswitch inputId="unlimitedFoldersAdministrator" [ngModel]="this.maxFoldersAdministrator() === null"
+                                            (ngModelChange)="this.onToggleUnlimited('maxFoldersAdministrator', $event)" />
+                                        <label for="unlimitedFoldersAdministrator">{{ 'users.limitModeUnlimited' | translate }}</label>
+                                    </div>
+                                    @if (this.maxFoldersAdministrator() !== null) {
+                                        <p-inputnumber [(ngModel)]="this.maxFoldersAdministrator" [min]="0" fluid />
+                                    }
+                                </div>
+                            </div>
+                        </p-fieldset>
+
+                        <p-fieldset [legend]="'users.roleUser' | translate">
+                            <div class="form-content">
+                                <div class="form-field">
+                                    <label for="">{{ 'system.notes' | translate }}</label>
+                                    <div class="flex items-center gap-2.5">
+                                        <p-toggleswitch inputId="unlimitedNotesUser" [ngModel]="this.maxNotesUser() === null"
+                                            (ngModelChange)="this.onToggleUnlimited('maxNotesUser', $event)" />
+                                        <label for="unlimitedNotesUser">{{ 'users.limitModeUnlimited' | translate }}</label>
+                                    </div>
+                                    @if (this.maxNotesUser() !== null) {
+                                        <p-inputnumber [(ngModel)]="this.maxNotesUser" [min]="0" fluid />
+                                    }
+                                </div>
+                                <div class="form-field">
+                                    <label for="">{{ 'system.folders' | translate }}</label>
+                                    <div class="flex items-center gap-2.5">
+                                        <p-toggleswitch inputId="unlimitedFoldersUser" [ngModel]="this.maxFoldersUser() === null"
+                                            (ngModelChange)="this.onToggleUnlimited('maxFoldersUser', $event)" />
+                                        <label for="unlimitedFoldersUser">{{ 'users.limitModeUnlimited' | translate }}</label>
+                                    </div>
+                                    @if (this.maxFoldersUser() !== null) {
+                                        <p-inputnumber [(ngModel)]="this.maxFoldersUser" [min]="0" fluid />
+                                    }
+                                </div>
+                            </div>
+                        </p-fieldset>
+                    </div>
+                    <p-divider />
+                    <div class="flex gap-2.5 mt-1">
+                        <component-button (onClick)="this.onSaveLimits()" severity="success" [label]="'system.saveLimits' | translate" />
+                    </div>
+                </p-card>
+
+                <p-card>
+                    <div class="form-content">
+                        <div class="flex justify-end">
+                            <component-infoTooltip [text]="'system.contentLimitsNotice' | translate" />
+                        </div>
+
+                        <p-fieldset [legend]="'users.roleAdministrator' | translate">
+                            <div class="form-content">
+                                <div class="form-field">
+                                    <label for="">{{ 'system.nameCharsLimit' | translate }}</label>
+                                    <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteNameCharsAdministrator" />
+                                </div>
+                                <div class="form-field">
+                                    <label for="">{{ 'system.descriptionCharsLimit' | translate }}</label>
+                                    <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteDescriptionCharsAdministrator" />
+                                </div>
+                                <div class="form-field">
+                                    <label for="">{{ 'system.tagsCharsLimit' | translate }}</label>
+                                    <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteTagsCharsAdministrator" />
+                                </div>
+                                <div class="form-field">
+                                    <label for="">{{ 'system.dataSizeLimit' | translate }}</label>
+                                    <component-presetLimitSelect [presets]="this.kbPresets" [unit]="'kb'" [(value)]="this.maxNoteDataKbAdministrator" />
+                                </div>
+                                <div class="form-field">
+                                    <label for="">{{ 'system.attachmentSizeLimit' | translate }}</label>
+                                    <component-presetLimitSelect [presets]="this.kbPresets" [unit]="'kb'" [(value)]="this.maxAttachmentFileSizeKbAdministrator" />
+                                </div>
+                            </div>
+                        </p-fieldset>
+
+                        <p-fieldset [legend]="'users.roleUser' | translate">
+                            <div class="form-content">
+                                <div class="form-field">
+                                    <label for="">{{ 'system.nameCharsLimit' | translate }}</label>
+                                    <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteNameCharsUser" />
+                                </div>
+                                <div class="form-field">
+                                    <label for="">{{ 'system.descriptionCharsLimit' | translate }}</label>
+                                    <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteDescriptionCharsUser" />
+                                </div>
+                                <div class="form-field">
+                                    <label for="">{{ 'system.tagsCharsLimit' | translate }}</label>
+                                    <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteTagsCharsUser" />
+                                </div>
+                                <div class="form-field">
+                                    <label for="">{{ 'system.dataSizeLimit' | translate }}</label>
+                                    <component-presetLimitSelect [presets]="this.kbPresets" [unit]="'kb'" [(value)]="this.maxNoteDataKbUser" />
+                                </div>
+                                <div class="form-field">
+                                    <label for="">{{ 'system.attachmentSizeLimit' | translate }}</label>
+                                    <component-presetLimitSelect [presets]="this.kbPresets" [unit]="'kb'" [(value)]="this.maxAttachmentFileSizeKbUser" />
+                                </div>
+                            </div>
+                        </p-fieldset>
+                    </div>
+                    <p-divider />
+                    <div class="flex gap-2.5 mt-1">
+                        <component-button (onClick)="this.onSaveContentLimits()" severity="success" [label]="'system.saveContentLimits' | translate" />
+                    </div>
+                </p-card>
+            </p-tabpanel>
+
+            <p-tabpanel value="2">
+                <p-card>
+                    <div class="form-content">
+                        <div class="flex justify-end">
+                            <component-infoTooltip [text]="'system.defaultPermissionsNotice' | translate" />
+                        </div>
+
+                        <p-fieldset [legend]="'users.roleAdministrator' | translate">
+                            <div class="form-content">
+                                <div class="flex items-center gap-2.5">
+                                    <p-toggleswitch inputId="canManageNotesAdministrator" [(ngModel)]="this.canManageNotesAdministrator" />
+                                    <label for="canManageNotesAdministrator">{{ 'users.manageNotesPermission' | translate }}</label>
+                                </div>
+                                <div class="flex items-center gap-2.5">
+                                    <p-toggleswitch inputId="canUseTwoFactorAdministrator" [(ngModel)]="this.canUseTwoFactorAdministrator" />
+                                    <label for="canUseTwoFactorAdministrator">{{ 'users.twoFactorPermission' | translate }}</label>
+                                </div>
+                            </div>
+                        </p-fieldset>
+
+                        <p-fieldset [legend]="'users.roleUser' | translate">
+                            <div class="form-content">
+                                <div class="flex items-center gap-2.5">
+                                    <p-toggleswitch inputId="canManageNotesUser" [(ngModel)]="this.canManageNotesUser" />
+                                    <label for="canManageNotesUser">{{ 'users.manageNotesPermission' | translate }}</label>
+                                </div>
+                                <div class="flex items-center gap-2.5">
+                                    <p-toggleswitch inputId="canUseTwoFactorUser" [(ngModel)]="this.canUseTwoFactorUser" />
+                                    <label for="canUseTwoFactorUser">{{ 'users.twoFactorPermission' | translate }}</label>
+                                </div>
+                            </div>
+                        </p-fieldset>
+                    </div>
+                    <p-divider />
+                    <div class="flex gap-2.5 mt-1">
+                        <component-button (onClick)="this.onSavePermissions()" severity="success" [label]="'system.savePermissions' | translate" />
+                    </div>
+                </p-card>
+            </p-tabpanel>
+        </p-tabpanels>
+    </p-tabs>
+</section>

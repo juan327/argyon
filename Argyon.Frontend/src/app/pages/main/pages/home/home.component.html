@@ -1,0 +1,53 @@
+<section class="grid grid-rows-[auto_1fr] gap-5">
+    @if (this.databaseService.loadingNoticeVisible()) {
+        <p-message severity="info" variant="simple">
+            {{ 'home.loadingNotes' | translate: { count: this.databaseService.syncedCount() } }}
+        </p-message>
+    }
+
+    <section>
+        <partial-noteList (onEditNote)="this.onEditNote($event)" (onDeleteNote)="this.OnDeleteNote($event)" (onToggleFavorite)="this.onToggleFavorite($event)" [(parentNote)]="this.parentNote">
+            @if (this.authService.canManageNotes()) {
+                <p-splitbutton [label]="'home.newPassword' | translate" severity="success" icon="pi pi-key" (onClick)="onOpenNote({note: null, template: 'password'})" [model]="this.items()" />
+            }
+        </partial-noteList>
+    </section>
+
+</section>
+<component-inputTextArea class="hidden"/>
+
+@let localModalNote = this.modalNote();
+@if (localModalNote.open) {
+    <component-dialog (open)="this.onNoteModalCloseRequested($event, note)">
+        <ng-template #header>
+            @if(localModalNote.note) {
+                <h2>{{ 'home.editNote' | translate }}</h2>
+            }
+            @else {
+                <h2>{{ 'home.createNote' | translate }}</h2>
+            }
+        </ng-template>
+        <partial-noteCreate [note]="localModalNote.note" [template]="localModalNote.template" (onCreate)="this.onCreateNote($event)" (onCancel)="this.modalNote.set({ open: false, note: null, template: 'password' })" [parentNote]="this.parentNote()" [isFolder]="false" #note />
+        <ng-template #footer>
+            <ng-container *ngTemplateOutlet="note.footer()" />
+        </ng-template>
+    </component-dialog>
+}
+
+@let localModalFolder = this.modalFolder();
+@if (localModalFolder.open) {
+    <component-dialog (open)="this.onNoteModalCloseRequested($event, folder)">
+        <ng-template #header>
+            @if(localModalFolder.note) {
+                <h2>{{ 'home.editFolder' | translate }}</h2>
+            }
+            @else {
+                <h2>{{ 'home.createFolder' | translate }}</h2>
+            }
+        </ng-template>
+        <partial-noteCreate [note]="localModalFolder.note" (onCreate)="this.onCreateFolder($event)" (onCancel)="this.modalFolder.set({ open: false, note: null })" [parentNote]="this.parentNote()" [isFolder]="true" #folder />
+        <ng-template #footer>
+            <ng-container *ngTemplateOutlet="folder.footer()" />
+        </ng-template>
+    </component-dialog>
+}

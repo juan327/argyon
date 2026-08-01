@@ -1,0 +1,18 @@
+
+<p-dialog [modal]="true" [visible]="true" [style]="{ width: '90vw', 'max-width': this.small() ? '28rem' : null }"
+    [draggable]="false" [resizable]="false" (visibleChange)="this.onVisibleChange($event)" [maximizable]="this.isMaximizable()">
+    <ng-template #header>
+        <div class="flex items-center justify-between gap-2 w-full">
+            @if (this.headerTemplate) {
+            <ng-container [ngTemplateOutlet]="this.headerTemplate"></ng-container>
+            }
+        </div>
+    </ng-template>
+    <ng-content />
+
+    @if (this.footerTemplate) {
+    <ng-template #footer>
+        <ng-container [ngTemplateOutlet]="this.footerTemplate"></ng-container>
+    </ng-template>
+    }
+</p-dialog>

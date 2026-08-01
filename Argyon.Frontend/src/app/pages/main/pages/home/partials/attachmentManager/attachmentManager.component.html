@@ -1,0 +1,101 @@
+<component-dialog (open)="this.open.emit($event)">
+    <ng-template #header>
+        <h2>{{ 'attachmentManager.title' | translate: { name: this.note().name } }}</h2>
+    </ng-template>
+
+    <p-table [value]="this.filteredAttachments()" dataKey="id" tableStyleClass="w-full" [tableStyle]="{ width: '100%' }"
+        [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20, 50]" [first]="this.tableFirst()"
+        (onPage)="this.tableFirst.set($event.first)" [showCurrentPageReport]="true" [loading]="this.loading()"
+        [currentPageReportTemplate]="'attachmentManager.pageReportTemplate' | translate" stripedRows [rowHover]="true" paginatorPosition="both">
+        <ng-template #caption>
+            <div class="flex items-center justify-between flex-wrap gap-3 py-1">
+                <p-inputgroup class="max-w-80 flex-[1_1_240px]">
+                    <p-inputgroup-addon>
+                        <i class="pi pi-search"></i>
+                    </p-inputgroup-addon>
+                    <input pInputText type="text" [placeholder]="'attachmentManager.searchPlaceholder' | translate"
+                        [ngModel]="this.searchText()" (ngModelChange)="this.OnSearchTextChange($event)" />
+                </p-inputgroup>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <component-button type="button" icon="pi pi-plus" width="auto"
+                        [label]="'attachmentManager.addAction' | translate" (onClick)="this.OnOpenUploadModal()" />
+                </div>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th>{{ 'attachmentManager.nameColumn' | translate }}</th>
+                <th class="w-[1%] whitespace-nowrap">{{ 'attachmentManager.sizeColumn' | translate }}</th>
+                <th class="w-[1%] whitespace-nowrap text-right">{{ 'attachmentManager.actionsColumn' | translate }}</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-item>
+            <tr>
+                <td class="align-middle py-2.5 px-3 max-[480px]:p-2">
+                    <div class="flex flex-col gap-1">
+                        <span class="text-base font-medium text-(--p-text-color) break-all">{{ item.decryptedName }}</span>
+                        <span class="inline-flex items-center gap-1 text-[0.8rem] text-(--p-text-muted-color)">
+                            <i class="pi pi-clock text-xs"></i>
+                            {{ item.createdAt | date: this.settingsService.dateTimeFormat() }}
+                        </span>
+                    </div>
+                </td>
+                <td class="w-[1%] whitespace-nowrap align-middle py-2.5 px-3 max-[480px]:p-2 text-(--p-text-muted-color)">
+                    {{ this.formatBytes(item.sizeBytes) }}
+                </td>
+                <td class="w-[1%] whitespace-nowrap text-right align-middle py-2.5 px-3 max-[480px]:p-2">
+                    <div class="flex items-center justify-end gap-1 shrink-0">
+                        <component-button type="button" icon="pi pi-download" severity="secondary" size="small" width="auto"
+                            [rounded]="true" [tooltip]="'attachmentManager.downloadAction' | translate" (onClick)="this.OnDownload(item)" />
+                        <component-button type="button" icon="pi pi-trash" severity="danger" size="small" width="auto"
+                            [rounded]="true" [tooltip]="'common.delete' | translate" (onClick)="this.OnDelete(item)" />
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+            <tr>
+                <td colspan="3">
+                    <div class="flex flex-col items-center justify-center gap-3 py-12 px-4 text-(--p-text-muted-color)">
+                        <i class="pi pi-inbox text-[2.5rem] opacity-[0.35]"></i>
+                        <p class="text-sm opacity-[0.55]">{{ 'attachmentManager.emptyState' | translate }}</p>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</component-dialog>
+
+@if (this.uploadModalOpen()) {
+<component-dialog (open)="this.OnCancelUpload()" [small]="true">
+    <ng-template #header>
+        <h2>{{ 'attachmentManager.uploadModalTitle' | translate }}</h2>
+    </ng-template>
+
+    <div class="flex flex-col gap-3">
+        <p class="text-sm text-(--p-text-muted-color)">
+            @if (this.maxAttachmentSizeLabel(); as maxSize) {
+            {{ 'attachmentManager.maxSizeAllowed' | translate: { size: maxSize } }}
+            } @else {
+            {{ 'attachmentManager.noSizeLimit' | translate }}
+            }
+        </p>
+
+        <p-fileupload #attachmentFileUpload mode="basic" name="file" chooseIcon="pi pi-file" [auto]="false"
+            [chooseLabel]="'attachmentManager.chooseFileAction' | translate" [disabled]="this.uploading()"
+            (onSelect)="this.OnFileSelected($event)" (onClear)="this.selectedFile.set(null)" />
+
+        @if (this.selectedFile(); as file) {
+        <p class="text-sm text-(--p-text-muted-color)">
+            {{ 'attachmentManager.estimatedSize' | translate: { size: this.formatBytes(this.estimatedEncryptedSize()) } }}
+        </p>
+        }
+    </div>
+
+    <ng-template #footer>
+        <component-button (onClick)="this.OnCancelUpload()" severity="secondary" [label]="'common.cancel' | translate" />
+        <component-button (onClick)="this.OnConfirmUpload()" severity="success"
+            [disabled]="this.selectedFile() === null || this.uploading()" [label]="'attachmentManager.confirmUpload' | translate" />
+    </ng-template>
+</component-dialog>
+}

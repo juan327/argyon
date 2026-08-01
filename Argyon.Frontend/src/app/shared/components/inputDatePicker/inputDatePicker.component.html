@@ -1,0 +1,36 @@
+@let cfg = this.config();
+@let hasLabel = this.label().length > 0;
+
+@if (this.showCopyButton()) {
+<p-inputgroup>
+    @if (hasLabel) {
+    <p-iftalabel>
+        <p-datepicker [(ngModel)]="this.date" [view]="cfg.view" [dateFormat]="cfg.dateFormat" [showTime]="cfg.showTime"
+            [timeOnly]="cfg.timeOnly" [placeholder]="this.placeholder()" [disabled]="this.disabled()" [readonlyInput]="true"
+            [showIcon]="true" iconDisplay="input" appendTo="body" fluid />
+        <label for="">{{ this.label() }}</label>
+    </p-iftalabel>
+    } @else {
+    <p-datepicker [(ngModel)]="this.date" [view]="cfg.view" [dateFormat]="cfg.dateFormat" [showTime]="cfg.showTime"
+        [timeOnly]="cfg.timeOnly" [placeholder]="this.placeholder()" [disabled]="this.disabled()" [readonlyInput]="true"
+        [showIcon]="true" iconDisplay="input" appendTo="body" fluid />
+    }
+    <p-inputgroup-addon>
+        <p-button icon="pi pi-copy" severity="info" size="large" [disabled]="this.disabled()" (click)="this.onCopy.emit()" tabindex="-1" />
+    </p-inputgroup-addon>
+</p-inputgroup>
+}
+@else {
+    @if (hasLabel) {
+    <p-iftalabel>
+        <p-datepicker [(ngModel)]="this.date" [view]="cfg.view" [dateFormat]="cfg.dateFormat" [showTime]="cfg.showTime"
+            [timeOnly]="cfg.timeOnly" [placeholder]="this.placeholder()" [disabled]="this.disabled()" [readonlyInput]="true"
+            [showIcon]="true" iconDisplay="input" appendTo="body" fluid />
+        <label for="">{{ this.label() }}</label>
+    </p-iftalabel>
+    } @else {
+    <p-datepicker [(ngModel)]="this.date" [view]="cfg.view" [dateFormat]="cfg.dateFormat" [showTime]="cfg.showTime"
+        [timeOnly]="cfg.timeOnly" [placeholder]="this.placeholder()" [disabled]="this.disabled()" [readonlyInput]="true"
+        [showIcon]="true" iconDisplay="input" appendTo="body" fluid />
+    }
+}

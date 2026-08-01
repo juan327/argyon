@@ -1,0 +1,40 @@
+@let formField = this.formField();
+@let hasLabel = this.label().length > 0;
+
+<ng-template #inputTpl>
+    @if (formField !== undefined) {
+    <input pInputText type="text" [formField]="formField" [placeholder]="this.placeholder()" autocomplete="off" [readOnly]="this.readonly()" pSize="large" class="w-full">
+    } @else {
+    <input pInputText type="text" [value]="this.value()" (input)="this.value.set($event.target.value)" [placeholder]="this.placeholder()" autocomplete="off" [readOnly]="this.readonly()" [disabled]="this.disabled()" pSize="large" class="w-full">
+    }
+</ng-template>
+
+@if (this.showCopyButton()) {
+<p-inputgroup>
+    @if (hasLabel) {
+    <p-iftalabel>
+        <ng-container *ngTemplateOutlet="inputTpl" />
+        <label for="">{{ this.label() }}</label>
+    </p-iftalabel>
+    } @else {
+    <ng-container *ngTemplateOutlet="inputTpl" />
+    }
+    <p-inputgroup-addon>
+        <p-button icon="pi pi-copy" severity="info" size="large" [disabled]="this.disabled()" (click)="this.onCopy.emit()" tabindex="-1" />
+    </p-inputgroup-addon>
+</p-inputgroup>
+}
+@else {
+    @if (hasLabel) {
+    <p-iftalabel>
+        <ng-container *ngTemplateOutlet="inputTpl" />
+        <label for="">{{ this.label() }}</label>
+    </p-iftalabel>
+    } @else {
+    <ng-container *ngTemplateOutlet="inputTpl" />
+    }
+}
+
+@if (formField !== undefined && this.maxChars() !== null) {
+    <span class="text-xs text-(--p-text-muted-color)">{{ this.currentChars() }}/{{ this.maxChars() }}</span>
+}

@@ -1,0 +1,38 @@
+import { Translation } from 'primeng/api';
+
+export const primeNgTranslations: Record<'en' | 'es', Translation> = {
+    en: {
+        accept: 'Accept',
+        reject: 'Reject',
+        addRule: 'Add rule',
+        removeRule: 'Remove rule',
+        after: 'After',
+        before: 'Before',
+        clear: 'Clear',
+        apply: 'Apply',
+        matchAll: 'Match all',
+        matchAny: 'Match any',
+        cancel: 'Cancel',
+        dateIs: 'Date is',
+        dateIsNot: 'Date is not',
+        fileChosenMessage: '{0} files',
+        noFileChosenMessage: 'No file chosen',
+    },
+    es: {
+        accept: 'Aceptar',
+        reject: 'Rechazar',
+        addRule: 'Agregar regla',
+        removeRule: 'Eliminar regla',
+        after: 'Después',
+        before: 'Antes',
+        clear: 'Limpiar',
+        apply: 'Aplicar',
+        matchAll: 'Coincidir todo',
+        matchAny: 'Coincidir cualquiera',
+        cancel: 'Cancelar',
+        dateIs: 'La fecha es',
+        dateIsNot: 'La fecha no es',
+        fileChosenMessage: '{0} archivos',
+        noFileChosenMessage: 'Ningún archivo elegido',
+    },
+};

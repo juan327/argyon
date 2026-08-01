@@ -1,0 +1,12 @@
+<p-button
+    [type]="this.type()"
+    [label]="this.label()"
+    [severity]="this.severity()"
+    [disabled]="this.disabled()"
+    (onClick)="this.onClick.emit()"
+    [size]="this.size()"
+    [rounded]="this.rounded()"
+    [icon]="this.icon()"
+    [style]="{ width: this.width() }"
+    [pTooltip]="this.tooltip()"
+    [tooltipPosition]="this.tooltipPosition()"></p-button>

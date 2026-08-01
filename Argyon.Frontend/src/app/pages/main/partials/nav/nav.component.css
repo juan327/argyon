@@ -1,0 +1,9 @@
+:host ::ng-deep .nav-item-active > .p-menu-item-content {
+    background: var(--p-menu-item-focus-background);
+}
+
+:host ::ng-deep .nav-item-active .p-menu-item-link,
+:host ::ng-deep .nav-item-active .p-menu-item-icon,
+:host ::ng-deep .nav-item-active .p-menu-item-label {
+    color: var(--p-menu-item-focus-color);
+}

@@ -1,0 +1,8 @@
+<div class="flex items-center gap-2.5">
+    <p-select [ngModel]="this.mode()" (ngModelChange)="this.onModeChange($event)" [options]="this.modeOptions()"
+        optionLabel="label" optionValue="value" fluid appendTo="body" />
+    @if (this.mode() === 'custom') {
+        <p-inputnumber [ngModel]="this.value()" (ngModelChange)="this.onCustomValueChange($event)" [min]="1"
+            [suffix]="this.unit() === 'kb' ? ' KB' : ''" fluid />
+    }
+</div>

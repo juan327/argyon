@@ -1,0 +1,90 @@
+<section class="w-full h-dvh overflow-y-auto flex justify-center items-center">
+    <p-card>
+        @if (this.mode() === 'login') {
+            @if (this.pendingTwoFactor() === null) {
+                <form class="flex flex-col" (submit)="this.SubmitLogin($event)">
+                    <img src="logo.svg" alt="" class="mx-auto h-24 w-24" />
+                    <h1 class="text-center">{{ 'login.title' | translate }}</h1>
+                    <p-divider />
+                    <div class="form-content">
+                        <div class="form-field">
+                            <component-inputText [formField]="this.loginSignal.username" [placeholder]="'common.usernamePlaceholder' | translate" [label]="'common.username' | translate" />
+                        </div>
+
+                        <div class="form-field">
+                            <component-inputPassword [formField]="this.loginSignal.password" [placeholder]="'common.passwordPlaceholder' | translate" [label]="'common.password' | translate" />
+                        </div>
+                    </div>
+                    <p-divider />
+                    <div class="flex gap-2.5">
+                        @if (this.registrationEnabled()) {
+                            <component-button class="flex-1" (onClick)="this.onRedirectToRegister()" severity="info" [label]="'login.createAccount' | translate" />
+                        }
+                        <component-button class="flex-1" type="submit" [disabled]="this.loginSignal().invalid()" severity="success"
+                            [label]="'common.logIn' | translate" />
+                    </div>
+                </form>
+            } @else {
+                <img src="logo.svg" alt="" class="mx-auto h-24 w-24" />
+                <h1 class="text-center">{{ 'login.twoFactorTitle' | translate }}</h1>
+                <p-divider />
+                <div class="form-content">
+                    @if (this.useRecoveryCode() === false) {
+                        <label for="">{{ 'login.twoFactorPrompt' | translate }}</label>
+                        <p-inputotp [(ngModel)]="this.twoFactorCode" [length]="6" />
+                    } @else {
+                        <component-inputText [(value)]="this.recoveryCode" [placeholder]="'login.recoveryCodePlaceholder' | translate" [label]="'login.recoveryCodePrompt' | translate" />
+                    }
+                    <component-button (onClick)="this.onToggleRecoveryCodeMode()" severity="info" size="small"
+                        [label]="(this.useRecoveryCode() ? 'login.useAuthenticatorCode' : 'login.useRecoveryCode') | translate" />
+                </div>
+                <p-divider />
+                <div class="flex gap-2.5">
+                    <component-button class="flex-1" (onClick)="this.onCancelTwoFactor()" severity="info" [label]="'common.cancel' | translate" />
+                    <component-button class="flex-1" (onClick)="this.SubmitTwoFactor()" severity="success" [label]="'login.verifyCode' | translate" />
+                </div>
+            }
+        } @else {
+            @if (this.registrationEnabled()) {
+                <form class="flex flex-col" (submit)="this.SubmitRegister($event)">
+                    <img src="logo.svg" alt="" class="mx-auto h-24 w-24" />
+                    <h1 class="text-center">{{ 'register.title' | translate }}</h1>
+                    <p-divider />
+                    @if (this.noUsersExist()) {
+                        <p-message severity="info" icon="pi pi-info-circle">{{ 'register.ownerNotice' | translate }}</p-message>
+                    }
+                    <div class="form-content">
+                        <div class="form-field">
+                            <component-inputText [formField]="this.registerSignal.username" [placeholder]="'common.usernamePlaceholder' | translate" [label]="'common.username' | translate" />
+                        </div>
+
+                        <div class="form-field">
+                            <component-inputPassword [formField]="this.registerSignal.password"
+                                [placeholder]="'common.passwordPlaceholder' | translate" [label]="'common.password' | translate" />
+                        </div>
+
+                        <div class="form-field">
+                            <component-inputPassword [formField]="this.registerSignal.passwordConfirmation"
+                                [placeholder]="'common.confirmPasswordPlaceholder' | translate" [label]="'common.confirmPassword' | translate" />
+                        </div>
+                    </div>
+                    <p-divider />
+                    <div class="flex gap-2.5">
+                        <component-button class="flex-1" (onClick)="this.onRedirectToLogin()" severity="info" [label]="'common.logIn' | translate" />
+                        <component-button class="flex-1" type="submit" [disabled]="this.registerSignal().invalid()" severity="success"
+                            [label]="'register.register' | translate" />
+                    </div>
+                </form>
+            } @else {
+                <img src="logo.svg" alt="" class="mx-auto h-24 w-24" />
+                <h1 class="text-center">{{ 'register.title' | translate }}</h1>
+                <p-divider />
+                <p>{{ 'register.registrationDisabled' | translate }}</p>
+                <p-divider />
+                <div class="flex gap-2.5">
+                    <component-button class="flex-1" (onClick)="this.onRedirectToLogin()" severity="info" [label]="'common.logIn' | translate" />
+                </div>
+            }
+        }
+    </p-card>
+</section>

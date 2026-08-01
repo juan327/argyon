@@ -1,0 +1,22 @@
+<section class="w-full h-dvh overflow-y-auto flex justify-center items-center">
+    <p-card>
+        <form class="flex flex-col" (submit)="this.OnSubmit($event)">
+            <h1 class="text-center">{{ 'unlock.title' | translate }}</h1>
+            <p-divider />
+            <div class="form-content">
+                <div class="form-field">
+                    <component-inputText [(value)]="this._thisService.username" [readonly]="true" [disabled]="true" [label]="'common.username' | translate" />
+                </div>
+
+                <div class="form-field">
+                    <component-inputPassword [formField]="this.unlockSignal.password" [placeholder]="'common.passwordPlaceholder' | translate" [label]="'common.password' | translate" />
+                </div>
+            </div>
+            <p-divider />
+            <div>
+                <component-button type="submit" [disabled]="this.unlockSignal().invalid()" [label]="'unlock.unlock' | translate"
+                    severity="success" />
+            </div>
+        </form>
+    </p-card>
+</section>

@@ -1,0 +1,24 @@
+# Dependencias e artefactos de build que la imagen Docker genera desde cero.
+**/node_modules
+**/.angular
+**/dist
+**/bin
+**/obj
+Argyon.Backend/wwwroot
+Argyon.Backend/Data
+
+# Control de versiones / IDE / documentación (no hacen falta dentro de la imagen).
+.git
+.github
+.vs
+.vscode
+.idea
+.agents
+Docs
+*.md
+!Docker/Postgresql/README.md
+
+# Datos de ejecución local que no deben terminar horneados en la imagen.
+**/*.db
+**/*.db-shm
+**/*.db-wal

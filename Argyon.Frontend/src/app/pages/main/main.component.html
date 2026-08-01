@@ -1,0 +1,24 @@
+@if (this._authService.unlocked())
+{
+@if (this.screenWidth() < this.breakWidth) { <p-drawer [(visible)]="this.showSidebar" [closable]="false" [style]="{ width: '15rem' }">
+    <partial-nav (onCloseNav)="this.onToggleSidebar()" />
+    </p-drawer>
+    }
+
+    <main class="grid gap-4 p-4 h-dvh overflow-hidden max-[800px]:grid-cols-1" [class.grid-cols-1]="!this.showSidebar()" [class.sidebar-grid]="this.showSidebar()">
+        @if (this.screenWidth() >= this.breakWidth)
+        {
+        <section class="nav h-full min-h-0 overflow-y-auto" [class.hidden]="!this.showSidebar()">
+            <partial-nav />
+        </section>
+        }
+        <section class="flex flex-col gap-2 h-full min-h-0 overflow-y-auto">
+            <component-button icon="pi pi-bars" [rounded]="true" width="auto" (onClick)="this.onToggleSidebar()" severity="secondary" />
+            <router-outlet />
+        </section>
+    </main>
+    }
+    @else
+    {
+    <partial-unlock />
+    }

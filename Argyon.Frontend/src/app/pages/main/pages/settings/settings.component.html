@@ -1,0 +1,197 @@
+<section class="w-full flex flex-col items-stretch gap-5">
+    <p-tabs value="0">
+        <p-tablist>
+            <p-tab value="0">{{ 'settings.preferencesTab' | translate }}</p-tab>
+            <p-tab value="1">{{ 'settings.passwordTab' | translate }}</p-tab>
+            <p-tab value="2">{{ 'settings.twoFactorTab' | translate }}</p-tab>
+        </p-tablist>
+        <p-tabpanels>
+            <p-tabpanel value="0">
+                <p-card>
+                    <form class="flex flex-col min-w-80" (submit)="this.OnSubmit($event)">
+                        <div class="form-content">
+                            <div class="form-field">
+                                <p-iftalabel>
+                                    <p-select [(ngModel)]="this.language" name="language" [options]="this.settingsService.languageOptions"
+                                        optionLabel="label" optionValue="value" fluid appendTo="body" />
+                                    <label for="">{{ 'settings.language' | translate }}</label>
+                                </p-iftalabel>
+                            </div>
+
+                            <div class="form-field">
+                                <p-iftalabel>
+                                    <p-select [(ngModel)]="this.timezone" name="timezone" [options]="this.settingsService.timezoneOptions"
+                                        optionLabel="label" optionValue="value" filter filterBy="label" fluid appendTo="body" />
+                                    <label for="">{{ 'settings.timezone' | translate }}</label>
+                                </p-iftalabel>
+                            </div>
+
+                            <div class="form-field">
+                                <p-iftalabel>
+                                    <p-select [(ngModel)]="this.dateFormat" name="dateFormat" [options]="this.settingsService.dateFormatOptions"
+                                        optionLabel="label" optionValue="value" fluid appendTo="body" />
+                                    <label for="">{{ 'settings.dateFormat' | translate }}</label>
+                                </p-iftalabel>
+                            </div>
+
+                            <div class="form-field">
+                                <p-iftalabel>
+                                    <p-select [(ngModel)]="this.monthYearFormat" name="monthYearFormat" [options]="this.settingsService.monthYearFormatOptions"
+                                        optionLabel="label" optionValue="value" fluid appendTo="body" />
+                                    <label for="">{{ 'settings.monthYearFormat' | translate }}</label>
+                                </p-iftalabel>
+                            </div>
+                        </div>
+                        <p-divider />
+                        <div class="flex gap-2.5 mt-1">
+                            <component-button type="submit" [label]="'settings.saveChanges' | translate" severity="success" />
+                        </div>
+                    </form>
+                </p-card>
+            </p-tabpanel>
+
+            <p-tabpanel value="1">
+                <p-card>
+                    <form class="flex flex-col min-w-80" (submit)="this.OnSubmitChangePassword($event)">
+                        <div class="form-content">
+                            <div class="form-field">
+                                <component-inputPassword [formField]="this.changePasswordSignal.currentPassword"
+                                    [placeholder]="'settings.currentPasswordPlaceholder' | translate" [label]="'settings.currentPassword' | translate" />
+                            </div>
+
+                            <div class="form-field">
+                                <component-inputPassword [formField]="this.changePasswordSignal.newPassword"
+                                    [placeholder]="'settings.newPasswordPlaceholder' | translate" [label]="'settings.newPassword' | translate" />
+                            </div>
+
+                            <div class="form-field">
+                                <component-inputPassword [formField]="this.changePasswordSignal.newPasswordConfirmation"
+                                    [placeholder]="'settings.confirmNewPasswordPlaceholder' | translate" [label]="'settings.confirmNewPassword' | translate" />
+                            </div>
+                        </div>
+                        <p-divider />
+                        <div class="flex gap-2.5 mt-1">
+                            <component-button type="submit" [disabled]="this.changePasswordSignal().invalid()"
+                                [label]="'settings.changePassword' | translate" severity="success" />
+                        </div>
+                    </form>
+                </p-card>
+            </p-tabpanel>
+
+            <p-tabpanel value="2">
+                @if (this.authService.canUseTwoFactor()) {
+                    <p-card>
+                        <div class="form-content">
+                            <p>
+                                {{ 'settings.status' | translate }}
+                                @if (this.twoFactorEnabled()) {
+                                    <p-tag severity="success" [value]="'settings.twoFactorActive' | translate" />
+                                } @else {
+                                    <p-tag severity="danger" [value]="'settings.twoFactorInactive' | translate" />
+                                }
+                            </p>
+                        </div>
+                        <p-divider />
+                        <div class="flex gap-2.5 mt-1">
+                            @if (this.twoFactorEnabled()) {
+                                <component-button (onClick)="this.onOpenDisableModal()" severity="danger" [label]="'settings.disable' | translate" />
+                                <component-button (onClick)="this.onOpenSetupModal()" severity="warn" [label]="'settings.reconfigure' | translate" />
+                            } @else {
+                                <component-button (onClick)="this.onOpenSetupModalDirect()" severity="success" [label]="'settings.configure2fa' | translate" />
+                            }
+                        </div>
+                    </p-card>
+                } @else {
+                    <p-card>
+                        <div class="form-content">
+                            <p>{{ 'settings.twoFactorDisabledByAdmin' | translate }}</p>
+                        </div>
+                    </p-card>
+                }
+            </p-tabpanel>
+        </p-tabpanels>
+    </p-tabs>
+</section>
+
+@if (this.setupModalOpen()) {
+<component-dialog (open)="this.setupModalOpen.set($event)">
+    <ng-template #header>
+        <h2>{{ 'settings.setupModalTitle' | translate }}</h2>
+    </ng-template>
+
+    <div class="flex flex-col items-center text-center gap-2.5">
+        @if (this.setupQrDataUrl() === null) {
+            <div class="flex flex-col items-center gap-1.25 w-full">
+                <component-inputPassword [(value)]="this.setupPassword" [placeholder]="'settings.currentPasswordPlaceholder' | translate" [label]="'settings.currentPassword' | translate" />
+            </div>
+
+            <component-button (onClick)="this.onGenerateQrCode()" severity="info" [label]="'settings.generateQrCode' | translate" />
+        } @else {
+            <p>{{ 'settings.scanQrInstructions' | translate }}</p>
+            <img class="max-w-50 w-full" [src]="this.setupQrDataUrl()" [attr.alt]="'settings.qrCodeAlt' | translate" />
+            <p>{{ 'settings.orEnterManually' | translate }} <strong>{{ this.setupSecret() }}</strong></p>
+            <div class="flex flex-col items-center gap-1.25 w-full">
+                <label for="">{{ 'settings.verificationCode' | translate }}</label>
+                <p-inputotp [(ngModel)]="this.setupCode" [length]="6" />
+            </div>
+        }
+    </div>
+
+    <ng-template #footer>
+        <component-button (onClick)="this.setupModalOpen.set(false)" severity="secondary" [label]="'common.cancel' | translate" />
+        @if (this.setupQrDataUrl() !== null) {
+            <component-button (onClick)="this.onConfirmEnable()" severity="success" [label]="'settings.confirmAndEnable' | translate" />
+        }
+    </ng-template>
+</component-dialog>
+}
+
+@if (this.disableModalOpen()) {
+<component-dialog (open)="this.disableModalOpen.set($event)" [small]="true">
+    <ng-template #header>
+        <h2>{{ 'settings.disableModalTitle' | translate }}</h2>
+    </ng-template>
+
+    <div class="form-content">
+        <div class="form-field">
+            <component-inputPassword [(value)]="this.disablePassword" [placeholder]="'settings.currentPasswordPlaceholder' | translate" [label]="'settings.currentPassword' | translate" />
+        </div>
+        <div class="form-field">
+            @if (this.disableUseRecoveryCode() === false) {
+                <label for="">{{ 'settings.verificationCode' | translate }}</label>
+                <p-inputotp [(ngModel)]="this.disableCode" [length]="6" />
+            } @else {
+                <component-inputText [(value)]="this.disableCode" [placeholder]="'settings.recoveryCodePlaceholder' | translate" [label]="'settings.recoveryCode' | translate" />
+            }
+            <component-button (onClick)="this.onToggleDisableRecoveryCode()" severity="info" size="small"
+                [label]="(this.disableUseRecoveryCode() ? 'settings.useVerificationCode' : 'settings.useRecoveryCode') | translate" />
+        </div>
+    </div>
+
+    <ng-template #footer>
+        <component-button (onClick)="this.disableModalOpen.set(false)" severity="secondary" [label]="'common.cancel' | translate" />
+        <component-button (onClick)="this.onConfirmDisable()" severity="danger" [label]="'settings.disable' | translate" />
+    </ng-template>
+</component-dialog>
+}
+
+@if (this.recoveryCodesModalOpen()) {
+<component-dialog (open)="this.recoveryCodesModalOpen.set($event)" [small]="true">
+    <ng-template #header>
+        <h2>{{ 'settings.recoveryCodesModalTitle' | translate }}</h2>
+    </ng-template>
+
+    <div class="form-content">
+        <p>{{ 'settings.recoveryCodesNotice' | translate }}</p>
+        <ul>
+            @for (code of this.recoveryCodes(); track code) {
+                <li>{{ code }}</li>
+            }
+        </ul>
+    </div>
+
+    <ng-template #footer>
+        <component-button (onClick)="this.recoveryCodesModalOpen.set(false)" severity="success" [label]="'settings.savedRecoveryCodes' | translate" />
+    </ng-template>
+</component-dialog>
+}

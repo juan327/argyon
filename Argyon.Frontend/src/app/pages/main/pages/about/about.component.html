@@ -1,0 +1,59 @@
+<section class="w-full flex flex-col items-stretch gap-5 text-center">
+    <p-card>
+        <div class="form-content items-center">
+            <h2>{{ 'about.appInfo' | translate }}</h2>
+            <p>
+                {{ 'about.version' | translate }}
+                @if (this.version() !== '') {
+                    <p-tag severity="info" [value]="'v' + this.version()" />
+                } @else {
+                    <p-tag severity="secondary" [value]="'about.versionUnknown' | translate" />
+                }
+            </p>
+            <p>{{ 'about.license' | translate }} <a [href]="this.licenseUrl" target="_blank" rel="noopener noreferrer">MIT</a></p>
+        </div>
+    </p-card>
+
+    <p-divider />
+
+    <p-card>
+        <div class="form-content items-center">
+            <h2>{{ 'about.repository' | translate }}</h2>
+            <p>{{ 'about.repositoryDescription' | translate }}</p>
+        </div>
+        <p-divider />
+        <div class="flex justify-center gap-2.5 mt-1">
+            <component-button (onClick)="this.onOpenGithub()" severity="secondary" icon="pi pi-github" [label]="'about.openGithub' | translate" />
+        </div>
+    </p-card>
+
+    <p-divider />
+
+    <p-card>
+        <div class="form-content items-center">
+            <h2>{{ 'about.credits' | translate }}</h2>
+
+            <h3>{{ 'about.backendCredits' | translate }}</h3>
+            <ul class="list-none p-0">
+                @for (credit of this.backendCredits; track credit.name) {
+                    <li class="flex items-center justify-center gap-2">
+                        <a [href]="credit.url" target="_blank" rel="noopener noreferrer">{{ credit.name }}</a>
+                        <p-tag severity="secondary" [value]="credit.license" />
+                    </li>
+                }
+            </ul>
+
+            <p-divider />
+
+            <h3>{{ 'about.frontendCredits' | translate }}</h3>
+            <ul class="list-none p-0">
+                @for (credit of this.frontendCredits; track credit.name) {
+                    <li class="flex items-center justify-center gap-2">
+                        <a [href]="credit.url" target="_blank" rel="noopener noreferrer">{{ credit.name }}</a>
+                        <p-tag severity="secondary" [value]="credit.license" />
+                    </li>
+                }
+            </ul>
+        </div>
+    </p-card>
+</section>

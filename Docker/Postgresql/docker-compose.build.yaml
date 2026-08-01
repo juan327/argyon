@@ -1,0 +1,61 @@
+version: "3.9"
+name: argyon
+services:
+  db:
+    container_name: argyon-db
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-argyon}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in Docker/Postgresql/.env}
+      POSTGRES_DB: ${POSTGRES_DB:-argyon}
+    volumes:
+      - argyon-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-argyon} -d ${POSTGRES_DB:-argyon}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    container_name: argyon-app
+    image: argyon
+    build:
+      context: ../..
+      dockerfile: Docker/Postgresql/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    volumes:
+      - argyon-data:/app/Data
+      # Default NON-sensitive configuration (Cors, ForwardedHeaders, Jwt
+      # Issuer/Audience/expiration, VaultFreshness, Attachments, RateLimiting,
+      # etc.): mounted read-only so it doesn't have to be repeated as
+      # environment variables in this compose. Edit this file to change
+      # those values.
+      - ./appsettings.json:/app/appsettings.json:ro
+    environment:
+      # Sensitive data: ALWAYS via environment variable, never hardcoded in the repo.
+      Database__Postgresql__Password: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in Docker/Postgresql/.env}
+      Jwt__Password: ${JWT_PASSWORD:?Set JWT_PASSWORD in Docker/Postgresql/.env}
+      Jwt__Salt: ${JWT_SALT:?Set JWT_SALT in Docker/Postgresql/.env}
+      Totp__EncryptionPassword: ${TOTP_ENCRYPTION_PASSWORD:?Set TOTP_ENCRYPTION_PASSWORD in Docker/Postgresql/.env}
+      Totp__EncryptionSalt: ${TOTP_ENCRYPTION_SALT:?Set TOTP_ENCRYPTION_SALT in Docker/Postgresql/.env}
+
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+
+      # PostgreSQL connection credentials (this same compose's "db"/"argyon-db"
+      # container by default; configurable in case you point to a PostgreSQL
+      # instance external to this compose). Tied to the same POSTGRES_*
+      # variables that configure the "db" container.
+      Database__Postgresql__Host: ${POSTGRES_HOST:-argyon-db}
+      Database__Postgresql__Port: ${POSTGRES_PORT:-5432}
+      Database__Postgresql__Username: ${POSTGRES_USER:-argyon}
+      Database__Postgresql__Database: ${POSTGRES_DB:-argyon}
+
+volumes:
+  argyon-postgres-data:
+  argyon-data:

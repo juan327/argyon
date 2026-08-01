@@ -1,0 +1,153 @@
+<section class="w-full flex flex-col items-stretch gap-5">
+    @if (this.authService.isBlocked()) {
+        <p-message severity="error">
+            {{ 'data.blockedAccountNotice' | translate }}
+        </p-message>
+    }
+    <p-tabs value="0">
+        <p-tablist>
+            <p-tab value="0">{{ 'data.exportTab' | translate }}</p-tab>
+            @if (this.authService.isBlocked() === false && this.authService.canManageNotes()) {
+                <p-tab value="1">{{ 'data.importTab' | translate }}</p-tab>
+            }
+        </p-tablist>
+        <p-tabpanels>
+            <p-tabpanel value="0">
+                <p-card>
+                    <form class="flex flex-col w-full min-w-80" (submit)="this.OnExport($event)">
+                        <div class="form-content">
+
+                            <div class="form-field">
+                                <p-iftalabel>
+                                    <p-select [(ngModel)]="this.exportFormat" [ngModelOptions]="{standalone: true}"
+                                        [options]="this.exportFormatOptions()" optionLabel="label" optionValue="value"
+                                        inputId="exportFormat" fluid appendTo="body" />
+                                    <label for="exportFormat">{{ 'data.exportFormat' | translate }}</label>
+                                </p-iftalabel>
+                            </div>
+
+                            <div class="form-field">
+                                <component-inputPassword [formField]="this.exportSignal.currentPassword"
+                                    [placeholder]="'data.currentPasswordPlaceholder' | translate" [label]="'data.currentPassword' | translate" />
+                            </div>
+
+                            @if (this.exportFormat() === 'encrypted') {
+                            <div class="form-field">
+                                <label>{{ 'data.exportedFilePassword' | translate }}</label>
+                                <div class="flex flex-col gap-2">
+                                    <div class="radio-option">
+                                        <p-radiobutton [(ngModel)]="this.exportPasswordMode" [ngModelOptions]="{standalone: true}"
+                                            value="same" inputId="exportPasswordSame" />
+                                        <label for="exportPasswordSame">{{ 'data.useCurrentPasswordOption' | translate }}</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <p-radiobutton [(ngModel)]="this.exportPasswordMode" [ngModelOptions]="{standalone: true}"
+                                            value="different" inputId="exportPasswordDifferent" />
+                                        <label for="exportPasswordDifferent">{{ 'data.useDifferentPasswordOption' | translate }}</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (this.exportPasswordMode() === 'different') {
+                            <p-message severity="warn">
+                                {{ 'data.differentPasswordWarning' | translate }}
+                            </p-message>
+
+                            <div class="form-field">
+                                <component-inputPassword [formField]="this.exportSignal.newExportPassword"
+                                    [placeholder]="'data.newExportPasswordPlaceholder' | translate" [label]="'data.newExportPassword' | translate" />
+                            </div>
+
+                            <div class="form-field">
+                                <component-inputPassword [formField]="this.exportSignal.newExportPasswordConfirmation"
+                                    [placeholder]="'data.confirmExportPasswordPlaceholder' | translate" [label]="'data.confirmExportPassword' | translate" />
+                            </div>
+                            }
+                            }
+
+                            @if (this.exportFormat() === 'plain') {
+                            <p-message severity="error">
+                                <span [innerHTML]="'data.plainWarning' | translate"></span>
+                            </p-message>
+
+                            <div class="flex items-start gap-2">
+                                <p-checkbox [(ngModel)]="this.plainExportConfirmed" [ngModelOptions]="{standalone: true}"
+                                    [binary]="true" inputId="plainExportConfirmed" />
+                                <label for="plainExportConfirmed">{{ 'data.plainExportCheckboxLabel' | translate }}</label>
+                            </div>
+                            }
+
+                        </div>
+                        <p-divider />
+                        <div class="flex gap-2.5 mt-1">
+                            <component-button type="submit" [disabled]="this.IsExportDisabled()" [label]="'data.exportAction' | translate"
+                                severity="success" />
+                        </div>
+                    </form>
+                </p-card>
+            </p-tabpanel>
+
+            @if (this.authService.isBlocked() === false && this.authService.canManageNotes()) {
+            <p-tabpanel value="1">
+                <p-card>
+                    <form class="flex flex-col w-full min-w-80" (submit)="this.OnImport($event)">
+                        <div class="form-content">
+
+                            <div class="form-field">
+                                <p-iftalabel>
+                                    <p-treeselect name="importTargetFolder" [(ngModel)]="this.importTargetFolder"
+                                        [options]="this._folderTree()" [placeholder]="'data.noFolder' | translate"
+                                        fluid appendTo="body" [filter]="true" filterBy="label,data"
+                                        [filterPlaceholder]="'data.searchFolder' | translate"
+                                        (onNodeSelect)="this.onSelectImportFolder($event)"
+                                        (onNodeUnselect)="this.onUnselectImportFolder()">
+                                        <ng-template #value let-node let-placeholder="placeholder">
+                                            @if (node) {
+                                            <span>{{node.data}}</span>
+                                            }
+                                            @else {
+                                            <span>{{placeholder}}</span>
+                                            }
+                                        </ng-template>
+                                    </p-treeselect>
+                                    <label for="">{{ 'data.importFolder' | translate }}</label>
+                                </p-iftalabel>
+                            </div>
+
+                            <div class="form-field">
+                                <label>{{ 'data.importFileLabel' | translate }}</label>
+                                <p-fileupload #importFileUpload mode="basic" name="importFile"
+                                    accept="application/json,.json"
+                                    [chooseLabel]="'data.chooseFileAction' | translate"
+                                    (onSelect)="this.OnFileSelected($event)" />
+                            </div>
+
+                            @if (this.parsedBundle(); as bundle) {
+                            @if (bundle.encrypted === true) {
+                            <div class="form-field">
+                                <component-inputPassword [(value)]="this.importPassword"
+                                    [placeholder]="'data.filePasswordPlaceholder' | translate" [label]="'data.filePassword' | translate" />
+                            </div>
+                            <p-message severity="warn">
+                                {{ 'data.differentPasswordImportWarning' | translate }}
+                            </p-message>
+                            } @else {
+                            <p-message severity="warn">
+                                {{ 'data.plainImportWarning' | translate }}
+                            </p-message>
+                            }
+                            }
+
+                        </div>
+                        <p-divider />
+                        <div class="flex gap-2.5 mt-1">
+                            <component-button type="submit" [disabled]="this.IsImportDisabled()" [label]="'data.importAction' | translate"
+                                severity="success" />
+                        </div>
+                    </form>
+                </p-card>
+            </p-tabpanel>
+            }
+        </p-tabpanels>
+    </p-tabs>
+</section>

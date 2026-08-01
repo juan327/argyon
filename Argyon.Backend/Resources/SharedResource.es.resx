@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Common -->
+  <data name="UserNotAuthenticated" xml:space="preserve"><value>Usuario no autenticado</value></data>
+  <data name="UserNotFound" xml:space="preserve"><value>No se ha encontrado el usuario</value></data>
+  <data name="InternalServerError" xml:space="preserve"><value>Error interno del servidor</value></data>
+  <data name="NoManageNotesPermission" xml:space="preserve"><value>No tiene permisos para gestionar apuntes o carpetas</value></data>
+  <data name="IncorrectPassword" xml:space="preserve"><value>Contraseña incorrecta</value></data>
+  <data name="InvalidTotpCode" xml:space="preserve"><value>Código inválido</value></data>
+  <data name="FolderNotFound" xml:space="preserve"><value>Carpeta no encontrada</value></data>
+  <data name="TwoFactorDisabledByAdministrator" xml:space="preserve"><value>Un administrador ha deshabilitado la verificación en dos pasos para tu cuenta</value></data>
+  <data name="LimitsUpdated" xml:space="preserve"><value>Límites actualizados correctamente</value></data>
+  <data name="PermissionsUpdated" xml:space="preserve"><value>Permisos actualizados correctamente</value></data>
+  <data name="ContentLimitsUpdated" xml:space="preserve"><value>Límites de contenido actualizados correctamente</value></data>
+  <data name="ContentLimitMustBePositive" xml:space="preserve"><value>Los límites de contenido deben ser un número positivo</value></data>
+  <data name="LoginSuccess" xml:space="preserve"><value>Inicio de sesión exitoso</value></data>
+  <data name="PasswordsDoNotMatch" xml:space="preserve"><value>Las contraseñas no coinciden</value></data>
+  <data name="PasswordMinLength" xml:space="preserve"><value>La contraseña debe tener al menos 6 caracteres</value></data>
+  <data name="PasswordMaxLength" xml:space="preserve"><value>La contraseña no puede tener más de 32 caracteres</value></data>
+  <data name="InvalidEncryptionData" xml:space="preserve"><value>Datos de cifrado inválidos</value></data>
+  <data name="InvalidRole" xml:space="preserve"><value>El rol solicitado no es válido</value></data>
+  <data name="InvalidToken" xml:space="preserve"><value>Token no válido</value></data>
+
+  <!-- User -->
+  <data name="UsernameAndPasswordRequired" xml:space="preserve"><value>El nombre de usuario y la contraseña son obligatorios</value></data>
+  <data name="UsernameMinLength" xml:space="preserve"><value>El nombre de usuario debe tener al menos 3 caracteres</value></data>
+  <data name="UsernameMaxLength" xml:space="preserve"><value>El nombre de usuario no puede tener más de 20 caracteres</value></data>
+  <data name="RegistrationDisabled" xml:space="preserve"><value>El registro de nuevas cuentas está deshabilitado</value></data>
+  <data name="RegisterSuccess" xml:space="preserve"><value>Registro exitoso</value></data>
+  <data name="InvalidCredentials" xml:space="preserve"><value>Usuario y/o contraseña incorrectos</value></data>
+  <data name="TwoFactorCodeRequired" xml:space="preserve"><value>Se requiere un código de verificación</value></data>
+  <data name="LogoutSuccess" xml:space="preserve"><value>Sesión cerrada exitosamente</value></data>
+  <data name="UnexpectedError" xml:space="preserve"><value>Error inesperado</value></data>
+  <data name="PasswordValid" xml:space="preserve"><value>Contraseña válida</value></data>
+  <data name="NewPasswordRequired" xml:space="preserve"><value>La nueva contraseña es obligatoria</value></data>
+  <data name="CurrentPasswordIncorrect" xml:space="preserve"><value>Contraseña actual incorrecta</value></data>
+  <data name="PasswordUpdated" xml:space="preserve"><value>Contraseña actualizada correctamente</value></data>
+  <data name="SessionRefreshed" xml:space="preserve"><value>Sesión renovada</value></data>
+  <data name="InvalidRefreshToken" xml:space="preserve"><value>Sesión inválida o expirada, por favor inicia sesión de nuevo</value></data>
+  <data name="RefreshTokenReuseDetected" xml:space="preserve"><value>Se detectó un problema de seguridad con tu sesión, por favor inicia sesión de nuevo</value></data>
+  <data name="VaultReauthRequired" xml:space="preserve"><value>Por favor vuelve a ingresar tu contraseña maestra para continuar</value></data>
+  <data name="NoAccessModulePermission" xml:space="preserve"><value>No tiene permisos para acceder a este módulo</value></data>
+  <data name="NoModifyRolePermission" xml:space="preserve"><value>No tiene permisos para modificar el rol de un usuario</value></data>
+  <data name="CannotModifyThisUserRole" xml:space="preserve"><value>No se puede modificar el rol de este usuario</value></data>
+  <data name="RoleUpdated" xml:space="preserve"><value>Rol actualizado correctamente</value></data>
+  <data name="NoDeleteUserPermission" xml:space="preserve"><value>No tiene permisos para eliminar usuarios</value></data>
+  <data name="CannotDeleteThisUser" xml:space="preserve"><value>No se puede eliminar este usuario</value></data>
+  <data name="UserDeleted" xml:space="preserve"><value>Usuario eliminado correctamente</value></data>
+  <data name="NoCreateUserWithRolePermission" xml:space="preserve"><value>No tiene permisos para crear un usuario con ese rol</value></data>
+  <data name="UsernameAlreadyTaken" xml:space="preserve"><value>El nombre de usuario ya está en uso</value></data>
+  <data name="UserCreated" xml:space="preserve"><value>Usuario creado correctamente</value></data>
+  <data name="CannotBlockYourself" xml:space="preserve"><value>No se puede bloquear a uno mismo</value></data>
+  <data name="NoBlockUserPermission" xml:space="preserve"><value>No tiene permisos para bloquear a este usuario</value></data>
+  <data name="UserBlocked" xml:space="preserve"><value>Usuario bloqueado correctamente</value></data>
+  <data name="UserUnblocked" xml:space="preserve"><value>Usuario desbloqueado correctamente</value></data>
+  <data name="NoModifyUserLimitsPermission" xml:space="preserve"><value>No tiene permisos para modificar los límites de un usuario</value></data>
+  <data name="CannotModifyThisUserLimit" xml:space="preserve"><value>No se puede modificar el límite de este usuario</value></data>
+  <data name="NoModifyUserPermissionsPermission" xml:space="preserve"><value>No tiene permisos para modificar los permisos de un usuario</value></data>
+  <data name="CannotModifyThisUserPermissions" xml:space="preserve"><value>No se pueden modificar los permisos de este usuario</value></data>
+
+  <!-- Note -->
+  <data name="NameRequired" xml:space="preserve"><value>Nombre no puede estar vacío</value></data>
+  <data name="NameTooLong" xml:space="preserve"><value>El nombre excede la longitud máxima permitida para tu cuenta</value></data>
+  <data name="DescriptionTooLong" xml:space="preserve"><value>La descripción excede la longitud máxima permitida para tu cuenta</value></data>
+  <data name="TagsTooLong" xml:space="preserve"><value>Las etiquetas exceden la longitud máxima permitida para tu cuenta</value></data>
+  <data name="DataTooLarge" xml:space="preserve"><value>El contenido del apunte excede el tamaño máximo permitido para tu cuenta</value></data>
+  <data name="NoteCreated" xml:space="preserve"><value>Apunte creado correctamente</value></data>
+  <data name="NoteNotFound" xml:space="preserve"><value>Apunte no encontrado</value></data>
+  <data name="NoteUpdated" xml:space="preserve"><value>Apunte actualizado correctamente</value></data>
+  <data name="NoteDeleted" xml:space="preserve"><value>Apunte eliminado correctamente</value></data>
+  <data name="NoItemsToImport" xml:space="preserve"><value>No hay elementos para importar</value></data>
+  <data name="ImportCompleted" xml:space="preserve"><value>Importación completada</value></data>
+
+  <!-- Attachment -->
+  <data name="AttachmentNotFound" xml:space="preserve"><value>Adjunto no encontrado</value></data>
+  <data name="AttachmentTooLarge" xml:space="preserve"><value>El archivo excede el tamaño máximo permitido para tu cuenta</value></data>
+  <data name="AttachmentFileRequired" xml:space="preserve"><value>Se requiere un archivo</value></data>
+  <data name="AttachmentCreated" xml:space="preserve"><value>Adjunto subido correctamente</value></data>
+  <data name="AttachmentDeleted" xml:space="preserve"><value>Adjunto eliminado correctamente</value></data>
+
+  <!-- Folder -->
+  <data name="FolderCreated" xml:space="preserve"><value>Carpeta creada exitosamente</value></data>
+  <data name="ParentFolderNotFound" xml:space="preserve"><value>Carpeta padre no encontrada</value></data>
+  <data name="FolderUpdated" xml:space="preserve"><value>Carpeta actualizada exitosamente</value></data>
+
+  <!-- Totp -->
+  <data name="CurrentPasswordRequiredForTwoFactorReset" xml:space="preserve"><value>Se requiere tu contraseña actual para reconfigurar el doble factor</value></data>
+  <data name="ScanQrCodeInstructions" xml:space="preserve"><value>Escanea el código QR con tu aplicación de autenticación y confirma con un código</value></data>
+  <data name="NoPendingTwoFactorSetup" xml:space="preserve"><value>No hay una configuración de doble factor pendiente de confirmar</value></data>
+  <data name="TwoFactorEnabled" xml:space="preserve"><value>Doble factor de autenticación activado</value></data>
+  <data name="TwoFactorNotActive" xml:space="preserve"><value>El doble factor de autenticación no está activo</value></data>
+  <data name="TwoFactorDisabled" xml:space="preserve"><value>Doble factor de autenticación desactivado</value></data>
+  <data name="RecoveryCodesRegenerated" xml:space="preserve"><value>Códigos de recuperación regenerados</value></data>
+  <data name="VerificationTokenInvalidOrExpired" xml:space="preserve"><value>El token de verificación no es válido o expiró</value></data>
+  <data name="TooManyFailedAttempts" xml:space="preserve"><value>Demasiados intentos fallidos, vuelve a intentarlo más tarde</value></data>
+
+  <!-- Settings -->
+  <data name="SettingsUpdated" xml:space="preserve"><value>Configuración actualizada correctamente</value></data>
+  <data name="NoModifySettingsPermission" xml:space="preserve"><value>No tiene permisos para modificar esta configuración</value></data>
+
+  <!-- Note limits -->
+  <data name="FolderLimitReached" xml:space="preserve"><value>Has alcanzado el límite de carpetas permitidas para tu cuenta</value></data>
+  <data name="NoteLimitReached" xml:space="preserve"><value>Has alcanzado el límite de apuntes permitidos para tu cuenta</value></data>
+
+  <!-- Middlewares / global -->
+  <data name="AccountBlockedExportOnly" xml:space="preserve"><value>Tu cuenta está bloqueada. Solo puedes exportar tus datos.</value></data>
+  <data name="RateLimitExceeded" xml:space="preserve"><value>Has excedido el límite de peticiones. Intenta nuevamente más tarde.</value></data>
+</root>

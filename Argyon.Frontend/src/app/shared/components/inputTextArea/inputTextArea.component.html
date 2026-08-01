@@ -1,0 +1,26 @@
+@let formField = this.formField();
+@let hasLabel = this.label().length > 0;
+
+@if (formField !== undefined) {
+    @if (hasLabel) {
+    <p-iftalabel>
+        <textarea class="p-textarea p-textarea-lg w-full resize-none" [rows]="this.rows()" [formField]="formField" [placeholder]="this.placeholder()" [readOnly]="this.readonly()"></textarea>
+        <label for="">{{ this.label() }}</label>
+    </p-iftalabel>
+    } @else {
+    <textarea class="p-textarea p-textarea-lg w-full resize-none" [rows]="this.rows()" [formField]="formField" [placeholder]="this.placeholder()" [readOnly]="this.readonly()"></textarea>
+    }
+    @if (this.maxChars() !== null) {
+        <span class="text-xs text-(--p-text-muted-color)">{{ this.currentChars() }}/{{ this.maxChars() }}</span>
+    }
+}
+@else {
+    @if (hasLabel) {
+    <p-iftalabel>
+        <textarea pTextarea [rows]="this.rows()" [value]="this.value()" [placeholder]="this.placeholder()" [readOnly]="this.readonly()" [disabled]="this.disabled()" pSize="large" class="w-full resize-none"></textarea>
+        <label for="">{{ this.label() }}</label>
+    </p-iftalabel>
+    } @else {
+    <textarea pTextarea [rows]="this.rows()" [value]="this.value()" [placeholder]="this.placeholder()" [readOnly]="this.readonly()" [disabled]="this.disabled()" pSize="large" class="w-full resize-none"></textarea>
+    }
+}

@@ -1,0 +1,85 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'tailwindcss';
+@import "primeicons/primeicons.css";
+
+* {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* The page never scrolls as a whole: every full-height section (login, main's
+   nav/content panels) manages its own scroll via h-dvh + overflow-y-auto. */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+h1 {
+  @apply text-4xl font-bold;
+}
+
+h2 {
+  @apply text-3xl font-bold;
+}
+
+h3 {
+  @apply text-2xl font-bold;
+}
+
+h4 {
+  @apply text-xl font-bold;
+}
+
+h5 {
+  @apply text-lg font-bold;
+}
+
+h6 {
+  @apply text-base font-bold;
+}
+
+component-inputpassword {
+  position: relative;
+}
+
+/* p-iftalabel adds top/bottom padding to the paired input so the label fits above it,
+   which makes the row taller than the addon buttons next to it (they stay centered,
+   leaving empty space above/below). Stretch those buttons to match the row height. */
+.p-inputgroup:has(.p-iftalabel) .p-inputgroupaddon .p-button,
+.p-inputgroup:has(.p-iftalabel) .p-inputgroupaddon p-button {
+  height: 100%;
+}
+
+@layer components {
+  .form-content {
+    @apply flex flex-col gap-2.5;
+  }
+
+  .form-field {
+    @apply flex flex-col gap-1.25;
+  }
+
+  .radio-option {
+    @apply flex items-center gap-2;
+  }
+
+  .sidebar-grid {
+    @apply grid-cols-[auto_1fr];
+  }
+
+  .col-note-border {
+    @apply border-l-[3px] border-l-(--p-primary-color);
+  }
+
+  .col-note-border-folder {
+    @apply border-l-[3px] border-l-(--p-yellow-400,#f59e0b);
+  }
+
+  .note-icon-color {
+    @apply bg-[color-mix(in_srgb,var(--p-primary-color)_15%,transparent)] text-(--p-primary-color);
+  }
+
+  .note-icon-color-folder {
+    @apply bg-[color-mix(in_srgb,var(--p-yellow-400,#f59e0b)_15%,transparent)] text-(--p-yellow-400,#f59e0b);
+  }
+}

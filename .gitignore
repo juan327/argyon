@@ -1,0 +1,16 @@
+.vs/
+
+# API
+
+Argyon.Backend/bin/
+Argyon.Backend/obj/
+Argyon.Backend/wwwroot/
+
+# SPA
+Argyon.Frontend/node_modules/
+Argyon.Frontend/.angular/
+Argyon.Frontend/dist/
+
+# Docker (contiene secretos de entorno, no debe subirse)
+Docker/**/.env
+Docker/Build/

@@ -1,0 +1,12 @@
+<nav class="h-full flex flex-col overflow-y-auto">
+    <p-menu [model]="this._items()" styleClass="w-full border-none">
+        <ng-template #start>
+            <div class="flex justify-center py-3">
+                <button type="button" class="bg-transparent border-none p-0 cursor-pointer" (click)="this.onLogoClick()">
+                    <img src="logo.svg" alt="Argyon" class="h-24 w-24" />
+                </button>
+            </div>
+        </ng-template>
+    </p-menu>
+    <!-- <component-button label="Cerrar sesión" (onClick)="this.Logout()" severity="danger" /> -->
+</nav>

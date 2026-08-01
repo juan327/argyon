@@ -1,0 +1,177 @@
+@if (this.currentFolder() !== null && !this.showAllNotes()) {
+<div class="flex items-center gap-3 py-2.5 px-4 bg-(--p-surface-card)">
+    <p-button severity="secondary" [rounded]="true" icon="pi pi-arrow-left" (click)="this.OnBackToFolder()"
+        [pTooltip]="'noteList.backToFolder' | translate" />
+    <nav class="flex items-center gap-1 text-xl text-(--p-text-muted-color) font-medium overflow-x-auto whitespace-nowrap flex-1" [attr.aria-label]="'noteList.folderPath' | translate">
+        <button type="button" class="inline-flex items-center gap-1 bg-transparent border-none py-1 px-2 rounded-[0.4rem] text-inherit cursor-pointer shrink-0 [font:inherit] hover:bg-(--p-surface-hover) hover:text-(--p-text-color)"
+            (click)="this.OnGoToRoot()" [pTooltip]="'noteList.goToHome' | translate" tooltipPosition="bottom">
+            <i class="pi pi-home shrink-0 text-(--p-yellow-400)"></i>
+        </button>
+        @for (crumb of this.breadcrumb(); track crumb.id; let idx = $index; let last = $last) {
+        <i class="pi pi-angle-right shrink-0 text-[0.8rem] opacity-50 mx-[0.1rem]"></i>
+        @if (last) {
+        <span class="inline-flex items-center gap-1 bg-transparent border-none py-1 px-2 rounded-[0.4rem] shrink-0 [font:inherit] text-(--p-text-color) font-semibold">{{ crumb.name }}</span>
+        } @else {
+        <button type="button" class="inline-flex items-center gap-1 bg-transparent border-none py-1 px-2 rounded-[0.4rem] text-inherit cursor-pointer shrink-0 [font:inherit] hover:bg-(--p-surface-hover) hover:text-(--p-text-color)"
+            (click)="this.OnGoToBreadcrumb(idx)">{{ crumb.name }}</button>
+        }
+        }
+    </nav>
+</div>
+}
+
+<p-table [value]="this.listNotes()" dataKey="id" tableStyleClass="w-full" [tableStyle]="{ width: '100%' }"
+    [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20, 50]" [first]="this.tableFirst()"
+    (onPage)="this.tableFirst.set($event.first)" [showCurrentPageReport]="true"
+    [currentPageReportTemplate]="'noteList.pageReportTemplate' | translate" stripedRows [rowHover]="true" paginatorPosition="both">
+    <ng-template #caption>
+        <div class="flex items-center justify-between flex-wrap gap-3 py-1">
+            <p-inputgroup class="max-w-80 flex-[1_1_240px]">
+                <p-inputgroup-addon>
+                    <i class="pi pi-search"></i>
+                </p-inputgroup-addon>
+                <input pInputText type="text" [placeholder]="'noteList.searchPlaceholder' | translate"
+                    [ngModel]="this.searchText()" (ngModelChange)="this.OnSearchTextChange($event)" />
+            </p-inputgroup>
+            <div class="flex items-center gap-2 flex-wrap">
+                <p-button icon="pi pi-sliders-h" severity="secondary" [outlined]="true" [label]="'noteList.filters' | translate"
+                    (click)="filtersPopover.toggle($event)" [pTooltip]="'noteList.filtersTooltip' | translate"
+                    tooltipPosition="bottom" />
+                <ng-content />
+            </div>
+        </div>
+    </ng-template>
+    <p-popover #filtersPopover>
+        <div class="flex flex-col gap-3 min-w-56">
+            <span class="text-sm font-semibold text-(--p-text-color)">{{ 'noteList.filtersTooltip' | translate }}</span>
+            <div class="flex items-center gap-2 shrink-0">
+                <p-toggleswitch inputId="showAllNotes" [ngModel]="this.showAllNotes()"
+                    (ngModelChange)="this.OnToggleShowAllNotes($event)" />
+                <label for="showAllNotes" class="text-sm text-(--p-text-muted-color) cursor-pointer whitespace-nowrap">{{ 'noteList.showAllNotes' | translate }}</label>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+                <p-toggleswitch inputId="openOnRowClick" [ngModel]="this.openOnRowClick()"
+                    (ngModelChange)="this.OnToggleOpenOnRowClick($event)" />
+                <label for="openOnRowClick" class="text-sm text-(--p-text-muted-color) cursor-pointer whitespace-nowrap">{{ 'noteList.openOnRowClick' | translate }}</label>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+                <p-toggleswitch inputId="showOnlyFavorites" [ngModel]="this.showOnlyFavorites()"
+                    (ngModelChange)="this.OnToggleShowOnlyFavorites($event)" />
+                <label for="showOnlyFavorites" class="text-sm text-(--p-text-muted-color) cursor-pointer whitespace-nowrap">{{ 'noteList.showOnlyFavorites' | translate }}</label>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+                <p-toggleswitch inputId="hideNamesAndTags" [ngModel]="this.hideNamesAndTags()"
+                    (ngModelChange)="this.OnToggleHideNamesAndTags($event)" />
+                <label for="hideNamesAndTags" class="text-sm text-(--p-text-muted-color) cursor-pointer whitespace-nowrap">{{ 'noteList.hideNamesAndTags' | translate }}</label>
+            </div>
+            <div class="flex flex-col gap-[0.4rem]">
+                <label for="dateRangeFilter" class="text-sm text-(--p-text-muted-color)">{{ 'noteList.filterByModifiedDate' | translate }}</label>
+                <p-datepicker inputId="dateRangeFilter" [ngModel]="this.dateRange()"
+                    (ngModelChange)="this.OnDateRangeChange($event)" selectionMode="range" [dateFormat]="this.settingsService.primeNgDateFormat()"
+                    [showButtonBar]="true" [showIcon]="true" iconDisplay="input" [readonlyInput]="true"
+                    [placeholder]="'noteList.allDates' | translate" [fluid]="true" />
+            </div>
+        </div>
+    </p-popover>
+    <ng-template #header>
+        <tr>
+            <th>{{ 'noteList.noteColumn' | translate }}</th>
+            <th class="w-[1%] whitespace-nowrap text-right">{{ 'noteList.actionsColumn' | translate }}</th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-item>
+        <tr [class.is-folder]="item.isFolder" [class.cursor-pointer]="this.openOnRowClick()" (click)="this.OnRowClick(item)">
+            <td class="align-middle py-2.5 px-3 max-[480px]:p-2" [class.col-note-border]="!item.isFolder" [class.col-note-border-folder]="item.isFolder">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 max-[480px]:w-8 max-[480px]:h-8" [class.note-icon-color]="!item.isFolder" [class.note-icon-color-folder]="item.isFolder">
+                        @if (item.isFolder) {
+                        <i class="pi pi-folder text-xl"></i>
+                        } @else {
+                        <i class="pi pi-file-edit text-xl"></i>
+                        }
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        @if (item.folderPath) {
+                        <span class="text-xs text-(--p-text-muted-color) whitespace-nowrap overflow-hidden text-ellipsis" [title]="('noteList.location' | translate: { path: item.folderPath })">{{ item.folderPath }}</span>
+                        }
+                        <div class="flex items-center gap-1.5 min-w-0">
+                            @if (item.isFavorite) {
+                            <i class="pi pi-star-fill text-[0.65rem] text-(--p-yellow-400,#f59e0b) opacity-70 shrink-0"
+                                [pTooltip]="'noteList.favorite' | translate" tooltipPosition="top"></i>
+                            }
+                            @if (item.hasAttachments) {
+                            <i class="pi pi-paperclip text-[0.65rem] text-(--p-text-muted-color) opacity-70 shrink-0"
+                                [pTooltip]="'noteList.hasAttachments' | translate" tooltipPosition="top"></i>
+                            }
+                            <span class="text-base font-semibold text-(--p-text-color) whitespace-nowrap overflow-hidden text-ellipsis max-[480px]:text-[0.9rem]">{{ this.hideNamesAndTags() ? this.hiddenTextPlaceholder : item.name }}</span>
+                        </div>
+                        <div class="flex items-center flex-wrap gap-[0.4rem]">
+                            <span class="inline-flex items-center gap-1 text-[0.8rem] text-(--p-text-muted-color)">
+                                <i class="pi pi-clock text-xs"></i>
+                                {{ item.updatedAt | date: this.settingsService.dateTimeFormat() }}
+                            </span>
+                            @if (this.convertStringToArray(item.tags).length > 0) {
+                            <div class="flex flex-wrap gap-1">
+                                @for (tag of this.convertStringToArray(item.tags); track $index) {
+                                <p-tag [value]="this.hideNamesAndTags() ? this.hiddenTextPlaceholder : tag" severity="info" />
+                                }
+                            </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="w-[1%] whitespace-nowrap text-right align-middle py-2.5 px-3 max-[480px]:p-2" (click)="$event.stopPropagation()">
+                <div class="flex items-center justify-end gap-1 shrink-0 max-[480px]:flex-col">
+                    @if (item.isFolder) {
+                        @if (item.actionsMenu.length > 0) {
+                        <p-splitbutton [label]="'noteList.open' | translate" severity="warn" size="small"
+                            (onClick)="this.OnGoToFolder(item)" [model]="item.actionsMenu" />
+                        } @else {
+                        <p-button [label]="'noteList.open' | translate" severity="warn" size="small"
+                            (onClick)="this.OnGoToFolder(item)" />
+                        }
+                    } @else if (this.authService.canManageNotes()) {
+                    <p-splitbutton [label]="'common.edit' | translate" severity="info" size="small"
+                        [buttonDisabled]="this.databaseService.loadingDatabase()" (onClick)="this.OnEditNote(item)"
+                        [model]="item.actionsMenu" />
+                    }
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+        <tr>
+            <td colspan="2">
+                <div class="flex flex-col items-center justify-center gap-3 py-12 px-4 text-(--p-text-muted-color)">
+                    <i class="pi pi-inbox text-[2.5rem] opacity-[0.35]"></i>
+                    <p class="text-sm opacity-[0.55]">{{ 'noteList.emptyState' | translate }}</p>
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+@if (this.deleteConfirmOpen()) {
+<component-dialog (open)="this.OnCancelDeleteNote()" [small]="true">
+    <ng-template #header>
+        <h2>{{ 'noteList.confirmDeleteNoteTitle' | translate }}</h2>
+    </ng-template>
+
+    <div class="flex flex-col gap-3">
+        <p>{{ 'noteList.confirmDeleteNoteMessage' | translate: { name: this.deleteConfirmNote()?.name } }}</p>
+        <component-inputPassword [(value)]="this.deleteConfirmPassword"
+            [placeholder]="'settings.currentPasswordPlaceholder' | translate" [label]="'settings.currentPassword' | translate" />
+    </div>
+
+    <ng-template #footer>
+        <component-button (onClick)="this.OnCancelDeleteNote()" severity="secondary" [label]="'common.cancel' | translate" />
+        <component-button (onClick)="this.OnConfirmDeleteNote()" severity="danger"
+            [disabled]="this.deleteConfirmPassword().length === 0 || this.deleteConfirmLoading()" [label]="'common.delete' | translate" />
+    </ng-template>
+</component-dialog>
+}
+
+@if (this.attachmentsModalNote() !== null) {
+<partial-attachmentManager [note]="this.attachmentsModalNote()!" (open)="this.attachmentsModalNote.set(null)" />
+}

@@ -1,0 +1,28 @@
+version: "3.9"
+name: argyon
+services:
+  app:
+    container_name: argyon-app
+    image: juan327/argyon:latest
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    volumes:
+      - argyon-data:/app/Data
+      # Default NON-sensitive configuration (Cors, ForwardedHeaders, Jwt
+      # Issuer/Audience/expiration, VaultFreshness, Attachments, RateLimiting,
+      # etc.): mounted read-only so it doesn't have to be repeated as
+      # environment variables in this compose. Edit this file to change
+      # those values.
+      - ./appsettings.json:/app/appsettings.json:ro
+    environment:
+      # Sensitive data: ALWAYS via environment variable, never hardcoded in the repo.
+      Jwt__Password: ${JWT_PASSWORD:?Set JWT_PASSWORD in Docker/SQLite/.env}
+      Jwt__Salt: ${JWT_SALT:?Set JWT_SALT in Docker/SQLite/.env}
+      Totp__EncryptionPassword: ${TOTP_ENCRYPTION_PASSWORD:?Set TOTP_ENCRYPTION_PASSWORD in Docker/SQLite/.env}
+      Totp__EncryptionSalt: ${TOTP_ENCRYPTION_SALT:?Set TOTP_ENCRYPTION_SALT in Docker/SQLite/.env}
+
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+
+volumes:
+  argyon-data:
