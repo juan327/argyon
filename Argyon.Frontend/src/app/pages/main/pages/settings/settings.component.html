@@ -131,6 +131,9 @@
             <img class="max-w-50 w-full" [src]="this.setupQrDataUrl()" [attr.alt]="'settings.qrCodeAlt' | translate" />
             <p>{{ 'settings.orEnterManually' | translate }} <strong>{{ this.setupSecret() }}</strong></p>
             <div class="flex flex-col items-center gap-1.25 w-full">
+                <component-inputPassword [(value)]="this.setupPassword" [placeholder]="'settings.currentPasswordPlaceholder' | translate" [label]="'settings.currentPassword' | translate" />
+            </div>
+            <div class="flex flex-col items-center gap-1.25 w-full">
                 <label for="">{{ 'settings.verificationCode' | translate }}</label>
                 <p-inputotp [(ngModel)]="this.setupCode" [length]="6" />
             </div>
