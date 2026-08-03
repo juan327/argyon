@@ -14,6 +14,15 @@ This project started as a personal tool built for my own use. I later decided to
 > - It has **not been audited by any third party**. As a result, it is **subject to vulnerabilities and errors**, known or unknown.
 > - Use it at your own risk, evaluate it carefully before relying on it for sensitive data, and do not assume any warranty or guaranteed level of security. 🚫🔒
 
+## 🚀 Live demo
+
+A demo is available at [argyon.onrender.com](https://argyon.onrender.com). You can log in with these test accounts:
+
+| User | Password |
+|---|---|
+| `admin` | `admin` |
+| `user` | `user` |
+
 The project is made up of two parts:
 
 - **`Argyon.Backend/`** — .NET 10 API (ASP.NET Core Web API) that exposes authentication, note/folder management, attachments, 2FA (TOTP) and settings, and also serves the frontend's static files.
