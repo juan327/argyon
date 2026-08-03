@@ -1,6 +1,6 @@
 import { JsonPipe } from '@angular/common';
 import { Component, computed, inject, input, model, OnInit } from '@angular/core';
-import { FieldTree, form, FormField, min, minLength, required, validate } from '@angular/forms/signals';
+import { FieldTree, FormField } from '@angular/forms/signals';
 import { TextareaModule } from 'primeng/textarea';
 import { IftaLabelModule } from 'primeng/iftalabel';
 

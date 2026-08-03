@@ -1,6 +1,6 @@
 import { JsonPipe, NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject, input, InputSignal, model, OnInit, output, signal } from '@angular/core';
-import { FieldTree, form, FormField, min, minLength, required, validate } from '@angular/forms/signals';
+import { FieldTree, FormField } from '@angular/forms/signals';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';

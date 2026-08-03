@@ -1,6 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, computed, effect, inject, input, OnInit, output, signal, TemplateRef, ViewChild, viewChild, WritableSignal } from '@angular/core';
-import { form, FormField, maxLength, min, minLength, required } from '@angular/forms/signals';
+import { form, FormField, maxLength, required } from '@angular/forms/signals';
 import { NoteCreateService } from './noteCreate.service';
 import { Router } from '@angular/router';
 import { ButtonComponent } from 'src/app/shared/components/button/button.component';

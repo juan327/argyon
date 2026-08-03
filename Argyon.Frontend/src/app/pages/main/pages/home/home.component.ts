@@ -1,5 +1,4 @@
 import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
-import { form, FormField, maxLength, min, minLength, required } from '@angular/forms/signals';
 import { HomeService } from './home.service';
 import { Router } from '@angular/router';
 import { DTOGeneric, DTOUser } from 'src/app/shared/dto';
@@ -96,6 +95,8 @@ export class HomeComponent {
   }
 
   public async onCreateNote(model: { message: string, success: boolean }) {
+    if (model.success === false) return;
+
     this.modalNote.set({
       open: false,
       note: null,
@@ -105,6 +106,8 @@ export class HomeComponent {
   }
 
   public async onCreateFolder(model: { message: string, success: boolean }) {
+    if (model.success === false) return;
+
     this.modalFolder.set({
       open: false,
       note: null,

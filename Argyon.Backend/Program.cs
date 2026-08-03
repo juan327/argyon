@@ -83,6 +83,8 @@ if (corsEnabled == true)
     });
 }
 
+var demoModeSettings = DemoModeSetup.GetSettings(builder.Configuration);
+
 var databaseSettings = DatabaseSetup.GetSettings(builder.Configuration);
 
 string dbPath = string.Empty;
@@ -196,6 +198,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseRateLimiter(RateLimitingSetup.CreateAuthenticatedLimiterOptions(builder.Configuration));
+
+if (demoModeSettings.Enabled == true)
+{
+    app.UseMiddleware<DemoModeRestrictionMiddleware>();
+}
 
 app.UseMiddleware<BlockedUserRestrictionMiddleware>();
 

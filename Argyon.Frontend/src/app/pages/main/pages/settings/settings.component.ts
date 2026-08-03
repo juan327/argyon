@@ -66,7 +66,7 @@ export class SettingsComponent {
   public changePasswordSignal = form(this.changePasswordForm, (path) => {
     required(path.currentPassword),
       required(path.newPassword),
-      minLength(path.newPassword, 8),
+      minLength(path.newPassword, 4),
       required(path.newPasswordConfirmation),
       validate(path.newPasswordConfirmation, ({ value }) => {
         const newPassword = this.changePasswordForm().newPassword;

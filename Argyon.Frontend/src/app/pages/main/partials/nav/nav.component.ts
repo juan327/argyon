@@ -1,6 +1,5 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { form, FormField, min, minLength, required } from '@angular/forms/signals';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { AuthService } from 'src/app/shared/services/auth.service';

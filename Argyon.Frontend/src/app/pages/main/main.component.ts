@@ -1,5 +1,4 @@
 import { Component, HostListener, inject, signal } from '@angular/core';
-import { form, FormField, min, minLength, required } from '@angular/forms/signals';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { MainService } from './main.service';
 import { UnlockComponent } from './partials/unlock/unlock.component';

@@ -163,5 +163,6 @@
 
   <!-- Middlewares / global -->
   <data name="AccountBlockedExportOnly" xml:space="preserve"><value>Tu cuenta está bloqueada. Solo puedes exportar tus datos.</value></data>
+  <data name="DemoModeReadOnly" xml:space="preserve"><value>Esta acción no se encuentra disponible en el modo demo.</value></data>
   <data name="RateLimitExceeded" xml:space="preserve"><value>Has excedido el límite de peticiones. Intenta nuevamente más tarde.</value></data>
 </root>
