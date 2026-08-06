@@ -80,6 +80,16 @@ public class UserController : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
+    // Heartbeat called by the frontend while the vault is unlocked and the tab is visible.
+    // [RequireFreshVault] ensures this can only extend an already-fresh session.
+    [RequireFreshVault]
+    [HttpPost("TouchVault")]
+    public async Task<ActionResult> TouchVault()
+    {
+        var response = await this.thisService.TouchVault(this.HttpContext);
+        return StatusCode((int)response.StatusCode, response);
+    }
+
     [HttpGet("Me")]
     public async Task<ActionResult> Me()
     {

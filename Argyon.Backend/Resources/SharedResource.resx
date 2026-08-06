@@ -95,6 +95,7 @@
   <data name="CurrentPasswordIncorrect" xml:space="preserve"><value>Current password is incorrect</value></data>
   <data name="PasswordUpdated" xml:space="preserve"><value>Password updated successfully</value></data>
   <data name="SessionRefreshed" xml:space="preserve"><value>Session refreshed</value></data>
+  <data name="VaultTouched" xml:space="preserve"><value>Vault session extended</value></data>
   <data name="InvalidRefreshToken" xml:space="preserve"><value>Invalid or expired session, please log in again</value></data>
   <data name="RefreshTokenReuseDetected" xml:space="preserve"><value>A security issue was detected with your session, please log in again</value></data>
   <data name="VaultReauthRequired" xml:space="preserve"><value>Please re-enter your master password to continue</value></data>

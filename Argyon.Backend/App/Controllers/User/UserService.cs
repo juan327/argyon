@@ -339,6 +339,45 @@ public class UserService: IUserService
         return response;
     }
 
+    // Called periodically by the frontend while the vault is unlocked and the tab is visible, so
+    // an actively-used session doesn't hit the vaultFreshnessMinutes deadline. Relies on
+    // [RequireFreshVault] on the controller action to only ever extend an already-fresh session,
+    // never resurrect one that already expired without re-proving the master password.
+    public async Task<DTOGeneric.DTOResponseApi> TouchVault(HttpContext httpContext)
+    {
+        var response = new DTOGeneric.DTOResponseApi();
+        try
+        {
+            var userId = httpContext.GetUserId();
+            if (userId == null)
+            {
+                response.StatusCode = HttpStatusCode.Unauthorized;
+                response.Message = this.localizer["UserNotAuthenticated"];
+                return response;
+            }
+
+            if (httpContext.Request.Cookies.TryGetValue("refresh_token", out string? refreshToken))
+            {
+                var refreshTokenHash = GenericService.HashToken(refreshToken);
+                var refreshTokenEntity = await this.db.RefreshTokens.FirstOrDefaultAsync(rt => rt.TokenHash == refreshTokenHash && rt.IsRevoked == false);
+                if (refreshTokenEntity != null)
+                {
+                    refreshTokenEntity.VaultUnlockedAt = DateTime.UtcNow;
+                    await this.db.SaveChangesAsync();
+                }
+            }
+
+            response.StatusCode = HttpStatusCode.OK;
+            response.Message = this.localizer["VaultTouched"];
+        }
+        catch (Exception ex)
+        {
+            response.StatusCode = HttpStatusCode.InternalServerError;
+            response.Message = this.localizer["InternalServerError"];
+        }
+        return response;
+    }
+
     public async Task<DTOGeneric.DTOResponseApiData<DTOUser.DTOVaultKeyInfo>> ValidatePassword(VMUser.VMValidatePassword request, HttpContext httpContext)
     {
         var response = new DTOGeneric.DTOResponseApiData<DTOUser.DTOVaultKeyInfo>();

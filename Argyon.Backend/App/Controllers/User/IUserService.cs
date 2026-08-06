@@ -11,6 +11,7 @@ public interface IUserService
     Task<DTOGeneric.DTOResponseApiData<DTOUser.DTORefreshResponse>> Refresh(HttpContext httpContext);
     Task<DTOGeneric.DTOResponseApiData<DTOUser.DTOVaultKeyInfo>> ValidatePassword(VMUser.VMValidatePassword request, HttpContext httpContext);
     Task<DTOGeneric.DTOResponseApi> ChangePassword(VMUser.VMChangePassword request, HttpContext httpContext);
+    Task<DTOGeneric.DTOResponseApi> TouchVault(HttpContext httpContext);
     Task<DTOGeneric.DTOResponseApiData<DTOUser.DTOMe>> Me(HttpContext httpContext);
     Task<DTOGeneric.DTOResponseApiPagedListData<DTOUser.DTOUserList>> List(VMUser.VMList request, HttpContext httpContext);
     Task<DTOGeneric.DTOResponseApi> ChangeRole(VMUser.VMChangeRole request, HttpContext httpContext);
