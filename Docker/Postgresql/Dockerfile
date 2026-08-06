@@ -56,7 +56,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 
 # Must be kept in sync with <Version> in Argyon.Backend/Argyon.Backend.csproj.
-LABEL org.opencontainers.image.version="0.0.1"
+LABEL org.opencontainers.image.version="0.0.3"
 
 COPY --from=backend-build /app/publish .
 
