@@ -27,7 +27,7 @@
                             </div>
 
                             <div class="form-field">
-                                <component-inputPassword [formField]="this.exportSignal.currentPassword"
+                                <component-input-password [formField]="this.exportSignal.currentPassword"
                                     [placeholder]="'data.currentPasswordPlaceholder' | translate" [label]="'data.currentPassword' | translate" />
                             </div>
 
@@ -54,12 +54,12 @@
                             </p-message>
 
                             <div class="form-field">
-                                <component-inputPassword [formField]="this.exportSignal.newExportPassword"
+                                <component-input-password [formField]="this.exportSignal.newExportPassword"
                                     [placeholder]="'data.newExportPasswordPlaceholder' | translate" [label]="'data.newExportPassword' | translate" />
                             </div>
 
                             <div class="form-field">
-                                <component-inputPassword [formField]="this.exportSignal.newExportPasswordConfirmation"
+                                <component-input-password [formField]="this.exportSignal.newExportPasswordConfirmation"
                                     [placeholder]="'data.confirmExportPasswordPlaceholder' | translate" [label]="'data.confirmExportPassword' | translate" />
                             </div>
                             }
@@ -125,7 +125,7 @@
                             @if (this.parsedBundle(); as bundle) {
                             @if (bundle.encrypted === true) {
                             <div class="form-field">
-                                <component-inputPassword [(value)]="this.importPassword"
+                                <component-input-password [(value)]="this.importPassword"
                                     [placeholder]="'data.filePasswordPlaceholder' | translate" [label]="'data.filePassword' | translate" />
                             </div>
                             <p-message severity="warn">

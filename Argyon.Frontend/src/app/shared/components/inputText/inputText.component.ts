@@ -1,5 +1,5 @@
-import { JsonPipe, NgTemplateOutlet } from '@angular/common';
-import { Component, computed, inject, input, InputSignal, model, OnInit, output, signal } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, input, model, output } from '@angular/core';
 import { FieldTree, FormField } from '@angular/forms/signals';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -8,12 +8,13 @@ import { ButtonModule } from 'primeng/button';
 import { IftaLabelModule } from 'primeng/iftalabel';
 
 @Component({
-    selector: 'component-inputText',
+    selector: 'component-input-text',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [FormField, InputTextModule, InputGroupModule, InputGroupAddonModule, ButtonModule, IftaLabelModule, NgTemplateOutlet],
     templateUrl: './inputText.component.html'
 })
 
-export class InputTextComponent implements OnInit {
+export class InputTextComponent {
 
     formField = model<FieldTree<string, string>>();
     placeholder = model<string>('');
@@ -29,7 +30,4 @@ export class InputTextComponent implements OnInit {
     // (if any), so a "current/max" hint can be shown without the caller having to pass it separately.
     public readonly maxChars = computed(() => this.formField()?.().maxLength?.() ?? null);
     public readonly currentChars = computed(() => this.formField()?.().value().length ?? 0);
-
-    async ngOnInit() {
-    }
 }

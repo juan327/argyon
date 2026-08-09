@@ -19,12 +19,12 @@
             </p-iftalabel>
         </div>
         <div class="form-field">
-            <component-inputText [formField]="this._mainSignal.name" [label]="'noteCreate.name' | translate" />
+            <component-input-text [formField]="this._mainSignal.name" [label]="'noteCreate.name' | translate" />
         </div>
 
         <div class="form-field">
             <p-iftalabel>
-                <component-inputAutocomplete [initialValue]="this._mainForm().tags"
+                <component-input-autocomplete [initialValue]="this._mainForm().tags"
                     (onValueChange)="this.updateTags($event)" />
                 <label for="">{{ 'noteCreate.tags' | translate }}</label>
             </p-iftalabel>
@@ -36,7 +36,7 @@
         </div>
 
         <div class="form-field">
-            <component-inputTextArea [formField]="this._mainSignal.description" [label]="'noteCreate.description' | translate" />
+            <component-input-text-area [formField]="this._mainSignal.description" [label]="'noteCreate.description' | translate" />
         </div>
     </div>
 
@@ -91,25 +91,25 @@
                         </div>
                         }
                         @if (note.Type === this.noteDataType.Password) {
-                        <component-inputPassword [(value)]="note.value" [label]="note.label"
+                        <component-input-password [(value)]="note.value" [label]="note.label"
                             (onCopy)="this.copyFieldValue(note.value)" [disableSpace]="true" [showCopyButton]="true"
                             [showGenerateButton]="true" />
                         }
                         @else if (note.Type === this.noteDataType.TextArea) {
-                        <component-inputTextArea [formField]="noteData.value" [label]="note.label" />
+                        <component-input-text-area [formField]="noteData.value" [label]="note.label" />
                         }
                         @else if (this.noteDateTypes.includes(note.Type)) {
-                        <component-inputDatePicker [(value)]="note.value" [dateDay]="note.dateDay ?? true"
+                        <component-input-date-picker [(value)]="note.value" [dateDay]="note.dateDay ?? true"
                             [dateMonth]="note.dateMonth ?? true" [dateYear]="note.dateYear ?? true"
                             [dateHour]="note.dateHour ?? false" [label]="note.label" [showCopyButton]="true"
                             (onCopy)="this.copyFieldValue(note.value)" />
                         }
                         @else if (this.noteMaskTypes.includes(note.Type)) {
-                        <component-inputMask [(value)]="note.value" [mask]="this.getMask(note.Type)" [label]="note.label"
+                        <component-input-mask [(value)]="note.value" [mask]="this.getMask(note.Type)" [label]="note.label"
                             [showCopyButton]="true" (onCopy)="this.copyFieldValue(note.value)" />
                         }
                         @else {
-                        <component-inputText [formField]="noteData.value" [label]="note.label"
+                        <component-input-text [formField]="noteData.value" [label]="note.label"
                             [showCopyButton]="true" (onCopy)="this.copyFieldValue(note.value)" />
                         }
                     </div>
@@ -159,7 +159,7 @@
 
     <div class="flex flex-col gap-4">
         <div class="form-field">
-            <component-inputText [(value)]="this._fieldLabelInput" [label]="'noteCreate.label' | translate" />
+            <component-input-text [(value)]="this._fieldLabelInput" [label]="'noteCreate.label' | translate" />
         </div>
         <div class="form-field">
             <p-iftalabel>
@@ -216,7 +216,7 @@
 
     <div class="flex flex-col gap-4">
         <div class="form-field">
-            <component-inputText [(value)]="this._categoryNameInput" [label]="'noteCreate.name' | translate" />
+            <component-input-text [(value)]="this._categoryNameInput" [label]="'noteCreate.name' | translate" />
         </div>
     </div>
 

@@ -1,5 +1,5 @@
-import { CommonModule, JsonPipe } from '@angular/common';
-import { Component, computed, ContentChild, effect, inject, input, InputSignal, model, OnInit, output, signal, TemplateRef, untracked, WritableSignal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, output, signal, untracked } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -26,13 +26,14 @@ interface GeneratePasswordSettings {
 }
 
 @Component({
-    selector: 'component-generatePassword',
+    selector: 'component-generate-password',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [FormsModule, FormField, CommonModule, DialogModule, InputGroupModule, InputGroupAddonModule, ButtonModule, KeyFilterModule, ToggleButtonModule, InputTextModule, DividerModule, InputNumberModule, CheckboxModule, MessageModule, ProgressBarModule, TranslatePipe],
     templateUrl: './generatePassword.component.html',
     styleUrls: ['./generatePassword.component.css']
 })
 
-export class GeneratePasswordComponent implements OnInit {
+export class GeneratePasswordComponent {
     private readonly _thisService = inject(GeneratePasswordService);
     private readonly _alertService = inject(AlertService);
     private readonly _translate = inject(TranslateService);
@@ -91,9 +92,6 @@ export class GeneratePasswordComponent implements OnInit {
         effect(() => {
             this.saveSettings();
         });
-    }
-
-    async ngOnInit() {
     }
 
     public onVisibleChange(event: boolean) {

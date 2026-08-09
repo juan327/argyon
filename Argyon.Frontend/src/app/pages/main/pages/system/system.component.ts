@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
@@ -16,6 +16,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-system',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, CardModule, DividerModule, InputNumberModule, FieldsetModule, TabsModule, ToggleSwitchModule, ButtonComponent, PresetLimitSelectComponent, InfoTooltipComponent, TranslatePipe],
   templateUrl: './system.component.html'
 })

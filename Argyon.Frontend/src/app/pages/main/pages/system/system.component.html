@@ -13,7 +13,7 @@
                             <p-toggleswitch inputId="registrationEnabled" [ngModel]="this.registrationEnabled()"
                                 (ngModelChange)="this.onToggleRegistrationEnabled($event)" />
                             <label for="registrationEnabled">{{ 'system.allowPublicRegistration' | translate }}</label>
-                            <component-infoTooltip [text]="'system.registrationDisabledNotice' | translate" />
+                            <component-info-tooltip [text]="'system.registrationDisabledNotice' | translate" />
                         </div>
                     </div>
                 </p-card>
@@ -23,7 +23,7 @@
                 <p-card>
                     <div class="form-content">
                         <div class="flex justify-end">
-                            <component-infoTooltip [text]="'system.defaultLimitsNotice' | translate" />
+                            <component-info-tooltip [text]="'system.defaultLimitsNotice' | translate" />
                         </div>
 
                         <p-fieldset [legend]="'users.roleAdministrator' | translate">
@@ -89,30 +89,30 @@
                 <p-card>
                     <div class="form-content">
                         <div class="flex justify-end">
-                            <component-infoTooltip [text]="'system.contentLimitsNotice' | translate" />
+                            <component-info-tooltip [text]="'system.contentLimitsNotice' | translate" />
                         </div>
 
                         <p-fieldset [legend]="'users.roleAdministrator' | translate">
                             <div class="form-content">
                                 <div class="form-field">
                                     <label for="">{{ 'system.nameCharsLimit' | translate }}</label>
-                                    <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteNameCharsAdministrator" />
+                                    <component-preset-limit-select [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteNameCharsAdministrator" />
                                 </div>
                                 <div class="form-field">
                                     <label for="">{{ 'system.descriptionCharsLimit' | translate }}</label>
-                                    <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteDescriptionCharsAdministrator" />
+                                    <component-preset-limit-select [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteDescriptionCharsAdministrator" />
                                 </div>
                                 <div class="form-field">
                                     <label for="">{{ 'system.tagsCharsLimit' | translate }}</label>
-                                    <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteTagsCharsAdministrator" />
+                                    <component-preset-limit-select [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteTagsCharsAdministrator" />
                                 </div>
                                 <div class="form-field">
                                     <label for="">{{ 'system.dataSizeLimit' | translate }}</label>
-                                    <component-presetLimitSelect [presets]="this.kbPresets" [unit]="'kb'" [(value)]="this.maxNoteDataKbAdministrator" />
+                                    <component-preset-limit-select [presets]="this.kbPresets" [unit]="'kb'" [(value)]="this.maxNoteDataKbAdministrator" />
                                 </div>
                                 <div class="form-field">
                                     <label for="">{{ 'system.attachmentSizeLimit' | translate }}</label>
-                                    <component-presetLimitSelect [presets]="this.kbPresets" [unit]="'kb'" [(value)]="this.maxAttachmentFileSizeKbAdministrator" />
+                                    <component-preset-limit-select [presets]="this.kbPresets" [unit]="'kb'" [(value)]="this.maxAttachmentFileSizeKbAdministrator" />
                                 </div>
                             </div>
                         </p-fieldset>
@@ -121,23 +121,23 @@
                             <div class="form-content">
                                 <div class="form-field">
                                     <label for="">{{ 'system.nameCharsLimit' | translate }}</label>
-                                    <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteNameCharsUser" />
+                                    <component-preset-limit-select [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteNameCharsUser" />
                                 </div>
                                 <div class="form-field">
                                     <label for="">{{ 'system.descriptionCharsLimit' | translate }}</label>
-                                    <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteDescriptionCharsUser" />
+                                    <component-preset-limit-select [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteDescriptionCharsUser" />
                                 </div>
                                 <div class="form-field">
                                     <label for="">{{ 'system.tagsCharsLimit' | translate }}</label>
-                                    <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteTagsCharsUser" />
+                                    <component-preset-limit-select [presets]="this.charPresets" [unit]="'chars'" [(value)]="this.maxNoteTagsCharsUser" />
                                 </div>
                                 <div class="form-field">
                                     <label for="">{{ 'system.dataSizeLimit' | translate }}</label>
-                                    <component-presetLimitSelect [presets]="this.kbPresets" [unit]="'kb'" [(value)]="this.maxNoteDataKbUser" />
+                                    <component-preset-limit-select [presets]="this.kbPresets" [unit]="'kb'" [(value)]="this.maxNoteDataKbUser" />
                                 </div>
                                 <div class="form-field">
                                     <label for="">{{ 'system.attachmentSizeLimit' | translate }}</label>
-                                    <component-presetLimitSelect [presets]="this.kbPresets" [unit]="'kb'" [(value)]="this.maxAttachmentFileSizeKbUser" />
+                                    <component-preset-limit-select [presets]="this.kbPresets" [unit]="'kb'" [(value)]="this.maxAttachmentFileSizeKbUser" />
                                 </div>
                             </div>
                         </p-fieldset>
@@ -153,7 +153,7 @@
                 <p-card>
                     <div class="form-content">
                         <div class="flex justify-end">
-                            <component-infoTooltip [text]="'system.defaultPermissionsNotice' | translate" />
+                            <component-info-tooltip [text]="'system.defaultPermissionsNotice' | translate" />
                         </div>
 
                         <p-fieldset [legend]="'users.roleAdministrator' | translate">

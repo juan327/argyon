@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { LoadingComponent } from "./shared/components/loading/loading.component";
@@ -10,6 +10,7 @@ import { PageTitleService } from './shared/services/pageTitle.service';
 
 @Component({
   selector: 'app-root',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet, ToastModule, LoadingComponent, ConfirmDialogModule],
   templateUrl: './app.html',
   styleUrls: ['./app.css']

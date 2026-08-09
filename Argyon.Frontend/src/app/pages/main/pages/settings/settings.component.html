@@ -55,17 +55,17 @@
                     <form class="flex flex-col min-w-80" (submit)="this.OnSubmitChangePassword($event)">
                         <div class="form-content">
                             <div class="form-field">
-                                <component-inputPassword [formField]="this.changePasswordSignal.currentPassword"
+                                <component-input-password [formField]="this.changePasswordSignal.currentPassword"
                                     [placeholder]="'settings.currentPasswordPlaceholder' | translate" [label]="'settings.currentPassword' | translate" />
                             </div>
 
                             <div class="form-field">
-                                <component-inputPassword [formField]="this.changePasswordSignal.newPassword"
+                                <component-input-password [formField]="this.changePasswordSignal.newPassword"
                                     [placeholder]="'settings.newPasswordPlaceholder' | translate" [label]="'settings.newPassword' | translate" />
                             </div>
 
                             <div class="form-field">
-                                <component-inputPassword [formField]="this.changePasswordSignal.newPasswordConfirmation"
+                                <component-input-password [formField]="this.changePasswordSignal.newPasswordConfirmation"
                                     [placeholder]="'settings.confirmNewPasswordPlaceholder' | translate" [label]="'settings.confirmNewPassword' | translate" />
                             </div>
                         </div>
@@ -122,7 +122,7 @@
     <div class="flex flex-col items-center text-center gap-2.5">
         @if (this.setupQrDataUrl() === null) {
             <div class="flex flex-col items-center gap-1.25 w-full">
-                <component-inputPassword [(value)]="this.setupPassword" [placeholder]="'settings.currentPasswordPlaceholder' | translate" [label]="'settings.currentPassword' | translate" />
+                <component-input-password [(value)]="this.setupPassword" [placeholder]="'settings.currentPasswordPlaceholder' | translate" [label]="'settings.currentPassword' | translate" />
             </div>
 
             <component-button (onClick)="this.onGenerateQrCode()" severity="info" [label]="'settings.generateQrCode' | translate" />
@@ -131,7 +131,7 @@
             <img class="max-w-50 w-full" [src]="this.setupQrDataUrl()" [attr.alt]="'settings.qrCodeAlt' | translate" />
             <p>{{ 'settings.orEnterManually' | translate }} <strong>{{ this.setupSecret() }}</strong></p>
             <div class="flex flex-col items-center gap-1.25 w-full">
-                <component-inputPassword [(value)]="this.setupPassword" [placeholder]="'settings.currentPasswordPlaceholder' | translate" [label]="'settings.currentPassword' | translate" />
+                <component-input-password [(value)]="this.setupPassword" [placeholder]="'settings.currentPasswordPlaceholder' | translate" [label]="'settings.currentPassword' | translate" />
             </div>
             <div class="flex flex-col items-center gap-1.25 w-full">
                 <label for="">{{ 'settings.verificationCode' | translate }}</label>
@@ -157,14 +157,14 @@
 
     <div class="form-content">
         <div class="form-field">
-            <component-inputPassword [(value)]="this.disablePassword" [placeholder]="'settings.currentPasswordPlaceholder' | translate" [label]="'settings.currentPassword' | translate" />
+            <component-input-password [(value)]="this.disablePassword" [placeholder]="'settings.currentPasswordPlaceholder' | translate" [label]="'settings.currentPassword' | translate" />
         </div>
         <div class="form-field">
             @if (this.disableUseRecoveryCode() === false) {
                 <label for="">{{ 'settings.verificationCode' | translate }}</label>
                 <p-inputotp [(ngModel)]="this.disableCode" [length]="6" />
             } @else {
-                <component-inputText [(value)]="this.disableCode" [placeholder]="'settings.recoveryCodePlaceholder' | translate" [label]="'settings.recoveryCode' | translate" />
+                <component-input-text [(value)]="this.disableCode" [placeholder]="'settings.recoveryCodePlaceholder' | translate" [label]="'settings.recoveryCode' | translate" />
             }
             <component-button (onClick)="this.onToggleDisableRecoveryCode()" severity="info" size="small"
                 [label]="(this.disableUseRecoveryCode() ? 'settings.useVerificationCode' : 'settings.useRecoveryCode') | translate" />

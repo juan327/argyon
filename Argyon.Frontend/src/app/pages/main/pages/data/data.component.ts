@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { form, FormField, validate } from '@angular/forms/signals';
 import { CardModule } from 'primeng/card';
@@ -26,6 +26,7 @@ import { Folder } from 'src/app/shared/entities/note';
 
 @Component({
   selector: 'app-data',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, FormField, CardModule, DividerModule, RadioButtonModule, CheckboxModule, SelectModule, TabsModule, FileUploadModule, ButtonComponent, InputPasswordComponent, TranslatePipe, MessageModule, IftaLabelModule, TreeSelectModule],
   templateUrl: './data.component.html'
 })
@@ -134,7 +135,7 @@ export class DataComponent {
   }
 
   // ---- Import ----
-  @ViewChild('importFileUpload') public importFileUpload?: FileUpload;
+  public importFileUpload = viewChild<FileUpload>('importFileUpload');
 
   private readonly _noFolderNode: TreeNode = { key: '', label: this._translate.instant('data.noFolder'), data: this._translate.instant('data.noFolder') };
   public _folderTree = computed<TreeNode[]>(() => {
@@ -168,7 +169,7 @@ export class DataComponent {
     const { message, success, bundle } = await this._importService.ParseFile(file);
     if (success === false || bundle === undefined) {
       this._alertService.showError(message);
-      this.importFileUpload?.clear();
+      this.importFileUpload()?.clear();
       return;
     }
 
@@ -211,7 +212,7 @@ export class DataComponent {
     if (success) {
       this.parsedBundle.set(null);
       this.importPassword.set('');
-      this.importFileUpload?.clear();
+      this.importFileUpload()?.clear();
       this.importTargetFolder.set(this._noFolderNode);
       await this._databaseService.StartBuild();
     }

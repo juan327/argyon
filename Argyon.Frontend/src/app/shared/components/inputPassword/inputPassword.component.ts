@@ -1,5 +1,4 @@
-import { Component, computed, input, model, output, signal } from '@angular/core';
-import { FieldTree, FormField } from '@angular/forms/signals';
+import { ChangeDetectionStrategy, Component, computed, input, model, output, signal } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -9,7 +8,8 @@ import { IftaLabelModule } from 'primeng/iftalabel';
 import { GeneratePasswordComponent } from 'src/app/shared/components/generatePassword/generatePassword.component';
 
 @Component({
-    selector: 'component-inputPassword',
+    selector: 'component-input-password',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [InputTextModule, InputGroupModule, InputGroupAddonModule, ButtonModule, KeyFilterModule, IftaLabelModule, GeneratePasswordComponent],
     templateUrl: './inputPassword.component.html'
 })
@@ -33,9 +33,6 @@ export class InputPasswordComponent {
 
     
     public _blockSpace: RegExp = /^[^\s]+$/;
-
-    async ngOnInit() {
-    }
 
     public togglePasswordVisibility() {
         this._type.set(this._type() === 'password' ? 'text' : 'password');

@@ -1,4 +1,4 @@
-@if (this._authService.unlocked())
+@if (this.authService.unlocked())
 {
 @if (this.screenWidth() < this.breakWidth) { <p-drawer [(visible)]="this.showSidebar" [closable]="false" [style]="{ width: '15rem' }">
     <partial-nav (onCloseNav)="this.onToggleSidebar()" />

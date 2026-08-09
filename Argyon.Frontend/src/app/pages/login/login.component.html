@@ -8,11 +8,11 @@
                     <p-divider />
                     <div class="form-content">
                         <div class="form-field">
-                            <component-inputText [formField]="this.loginSignal.username" [placeholder]="'common.usernamePlaceholder' | translate" [label]="'common.username' | translate" />
+                            <component-input-text [formField]="this.loginSignal.username" [placeholder]="'common.usernamePlaceholder' | translate" [label]="'common.username' | translate" />
                         </div>
 
                         <div class="form-field">
-                            <component-inputPassword [formField]="this.loginSignal.password" [placeholder]="'common.passwordPlaceholder' | translate" [label]="'common.password' | translate" />
+                            <component-input-password [formField]="this.loginSignal.password" [placeholder]="'common.passwordPlaceholder' | translate" [label]="'common.password' | translate" />
                         </div>
                     </div>
                     <p-divider />
@@ -33,7 +33,7 @@
                         <label for="">{{ 'login.twoFactorPrompt' | translate }}</label>
                         <p-inputotp [(ngModel)]="this.twoFactorCode" [length]="6" />
                     } @else {
-                        <component-inputText [(value)]="this.recoveryCode" [placeholder]="'login.recoveryCodePlaceholder' | translate" [label]="'login.recoveryCodePrompt' | translate" />
+                        <component-input-text [(value)]="this.recoveryCode" [placeholder]="'login.recoveryCodePlaceholder' | translate" [label]="'login.recoveryCodePrompt' | translate" />
                     }
                     <component-button (onClick)="this.onToggleRecoveryCodeMode()" severity="info" size="small"
                         [label]="(this.useRecoveryCode() ? 'login.useAuthenticatorCode' : 'login.useRecoveryCode') | translate" />
@@ -55,16 +55,16 @@
                     }
                     <div class="form-content">
                         <div class="form-field">
-                            <component-inputText [formField]="this.registerSignal.username" [placeholder]="'common.usernamePlaceholder' | translate" [label]="'common.username' | translate" />
+                            <component-input-text [formField]="this.registerSignal.username" [placeholder]="'common.usernamePlaceholder' | translate" [label]="'common.username' | translate" />
                         </div>
 
                         <div class="form-field">
-                            <component-inputPassword [formField]="this.registerSignal.password"
+                            <component-input-password [formField]="this.registerSignal.password"
                                 [placeholder]="'common.passwordPlaceholder' | translate" [label]="'common.password' | translate" />
                         </div>
 
                         <div class="form-field">
-                            <component-inputPassword [formField]="this.registerSignal.passwordConfirmation"
+                            <component-input-password [formField]="this.registerSignal.passwordConfirmation"
                                 [placeholder]="'common.confirmPasswordPlaceholder' | translate" [label]="'common.confirmPassword' | translate" />
                         </div>
                     </div>

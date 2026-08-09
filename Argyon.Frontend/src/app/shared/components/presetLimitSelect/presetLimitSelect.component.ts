@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -10,7 +10,8 @@ type PresetMode = 'inherit' | 'unlimited' | 'small' | 'medium' | 'large' | 'cust
 // (Usuarios) endpoints: null = unlimited (or, when showInherit is true, "inherit from role"),
 // -1 = explicit unlimited override (only meaningful when showInherit is true), >=1 = a cap.
 @Component({
-    selector: 'component-presetLimitSelect',
+    selector: 'component-preset-limit-select',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [FormsModule, SelectModule, InputNumberModule],
     templateUrl: './presetLimitSelect.component.html'
 })

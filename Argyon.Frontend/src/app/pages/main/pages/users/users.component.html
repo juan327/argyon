@@ -143,26 +143,26 @@
     <div class="form-content">
         <div class="form-field">
             <label for="">{{ 'system.nameCharsLimit' | translate }}</label>
-            <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [showInherit]="true" [(value)]="this.contentLimitsNameChars" />
+            <component-preset-limit-select [presets]="this.charPresets" [unit]="'chars'" [showInherit]="true" [(value)]="this.contentLimitsNameChars" />
         </div>
 
         <div class="form-field">
             <label for="">{{ 'system.descriptionCharsLimit' | translate }}</label>
-            <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [showInherit]="true" [(value)]="this.contentLimitsDescriptionChars" />
+            <component-preset-limit-select [presets]="this.charPresets" [unit]="'chars'" [showInherit]="true" [(value)]="this.contentLimitsDescriptionChars" />
         </div>
 
         <div class="form-field">
             <label for="">{{ 'system.tagsCharsLimit' | translate }}</label>
-            <component-presetLimitSelect [presets]="this.charPresets" [unit]="'chars'" [showInherit]="true" [(value)]="this.contentLimitsTagsChars" />
+            <component-preset-limit-select [presets]="this.charPresets" [unit]="'chars'" [showInherit]="true" [(value)]="this.contentLimitsTagsChars" />
         </div>
 
         <div class="form-field">
             <label for="">{{ 'system.dataSizeLimit' | translate }}</label>
-            <component-presetLimitSelect [presets]="this.kbPresets" [unit]="'kb'" [showInherit]="true" [(value)]="this.contentLimitsDataKb" />
+            <component-preset-limit-select [presets]="this.kbPresets" [unit]="'kb'" [showInherit]="true" [(value)]="this.contentLimitsDataKb" />
         </div>
         <div class="form-field">
             <label for="">{{ 'system.attachmentSizeLimit' | translate }}</label>
-            <component-presetLimitSelect [presets]="this.kbPresets" [unit]="'kb'" [showInherit]="true" [(value)]="this.contentLimitsAttachmentSizeKb" />
+            <component-preset-limit-select [presets]="this.kbPresets" [unit]="'kb'" [showInherit]="true" [(value)]="this.contentLimitsAttachmentSizeKb" />
         </div>
     </div>
 
@@ -212,16 +212,16 @@
 
     <div class="form-content">
         <div class="form-field">
-            <component-inputText [(value)]="this.createUsername" [placeholder]="'users.usernameFieldPlaceholder' | translate" [label]="'common.username' | translate" />
+            <component-input-text [(value)]="this.createUsername" [placeholder]="'users.usernameFieldPlaceholder' | translate" [label]="'common.username' | translate" />
         </div>
 
         <div class="form-field">
-            <component-inputPassword [(value)]="this.createPassword" [placeholder]="'users.initialPassword' | translate"
+            <component-input-password [(value)]="this.createPassword" [placeholder]="'users.initialPassword' | translate"
                 [showGenerateButton]="true" [showCopyButton]="true" [label]="'users.initialPassword' | translate" />
         </div>
 
         <div class="form-field">
-            <component-inputPassword [(value)]="this.createPasswordConfirmation" [placeholder]="'common.confirmPasswordPlaceholder' | translate" [label]="'common.confirmPassword' | translate" />
+            <component-input-password [(value)]="this.createPasswordConfirmation" [placeholder]="'common.confirmPasswordPlaceholder' | translate" [label]="'common.confirmPassword' | translate" />
         </div>
 
         @if (this.authService.currentUser()?.roleCode === this.RoleCode.Owner) {

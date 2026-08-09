@@ -3,7 +3,7 @@ import { inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { catchError, from, switchMap, throwError } from "rxjs";
 import { AuthService } from "../services/auth.service";
-import { TokenRefreshService } from "../services/token-refresh.service";
+import { TokenRefreshService } from "../services/tokenRefresh.service";
 import { SILENT_401 } from "../services/http.service";
 
 // Distinguishes the three ways a 401 can happen in this app and reacts accordingly:

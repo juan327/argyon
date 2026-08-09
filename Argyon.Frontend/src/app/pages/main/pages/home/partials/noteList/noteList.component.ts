@@ -1,4 +1,4 @@
-import { Component, inject, input, model, output, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, model, output, signal, computed } from '@angular/core';
 import { NoteListService } from './noteList.service';
 import { ButtonComponent } from 'src/app/shared/components/button/button.component';
 import { Note } from 'src/app/shared/entities/note';
@@ -35,7 +35,8 @@ interface NoteListFilters {
 }
 
 @Component({
-  selector: 'partial-noteList',
+  selector: 'partial-note-list',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, DatePipe, TagModule, ButtonComponent, ButtonModule, TooltipModule, TableModule, FormsModule, InputTextModule, InputGroupModule, InputGroupAddonModule, ToggleSwitchModule, PopoverModule, DatePickerModule, SplitButtonModule, TranslatePipe, DialogComponent, InputPasswordComponent, AttachmentManagerComponent],
   templateUrl: './noteList.component.html'
 })

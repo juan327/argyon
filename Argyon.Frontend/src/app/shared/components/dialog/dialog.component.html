@@ -3,16 +3,16 @@
     [draggable]="false" [resizable]="false" (visibleChange)="this.onVisibleChange($event)" [maximizable]="this.isMaximizable()">
     <ng-template #header>
         <div class="flex items-center justify-between gap-2 w-full">
-            @if (this.headerTemplate) {
-            <ng-container [ngTemplateOutlet]="this.headerTemplate"></ng-container>
+            @if (this.headerTemplate()) {
+            <ng-container [ngTemplateOutlet]="this.headerTemplate()"></ng-container>
             }
         </div>
     </ng-template>
     <ng-content />
 
-    @if (this.footerTemplate) {
+    @if (this.footerTemplate()) {
     <ng-template #footer>
-        <ng-container [ngTemplateOutlet]="this.footerTemplate"></ng-container>
+        <ng-container [ngTemplateOutlet]="this.footerTemplate()"></ng-container>
     </ng-template>
     }
 </p-dialog>

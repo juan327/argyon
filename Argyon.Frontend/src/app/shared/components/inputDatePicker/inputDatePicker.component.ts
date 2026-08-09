@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, model, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, model, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -9,7 +9,8 @@ import { getDateFieldConfig } from 'src/app/shared/entities/note';
 import { SettingsService } from 'src/app/shared/services/settings.service';
 
 @Component({
-    selector: 'component-inputDatePicker',
+    selector: 'component-input-date-picker',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [DatePickerModule, FormsModule, InputGroupModule, InputGroupAddonModule, ButtonModule, IftaLabelModule],
     templateUrl: './inputDatePicker.component.html'
 })

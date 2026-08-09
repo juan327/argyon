@@ -1,10 +1,11 @@
-import { Component, effect, inject, input, InputSignal, model, OnInit, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, model, OnInit, output, signal } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'component-inputAutocomplete',
+    selector: 'component-input-autocomplete',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [AutoCompleteModule, FormsModule],
     templateUrl: './inputAutocomplete.component.html'
 })

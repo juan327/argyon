@@ -1,10 +1,10 @@
-import { Component, inject, input, InputSignal, output, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { ButtonModule, ButtonSeverity } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
     selector: 'component-button',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './button.component.html',
     imports: [ButtonModule, TooltipModule]
 })
@@ -22,8 +22,4 @@ export class ButtonComponent {
     tooltipPosition = input<"top" | "bottom" | "left" | "right">("top");
 
     onClick = output<void>();
-
-    async ngOnInit() {
-    }
-
 }

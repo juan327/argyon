@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, computed, effect, inject, input, OnInit, output, signal, TemplateRef, ViewChild, viewChild, WritableSignal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, OnInit, output, signal, TemplateRef, viewChild, WritableSignal } from '@angular/core';
 import { form, FormField, maxLength, required } from '@angular/forms/signals';
 import { NoteCreateService } from './noteCreate.service';
 import { Router } from '@angular/router';
@@ -32,7 +32,8 @@ import { IftaLabelModule } from 'primeng/iftalabel';
 import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
-  selector: 'partial-noteCreate',
+  selector: 'partial-note-create',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DecimalPipe, FormField, InputTextComponent, ButtonComponent, InputTextAreaComponent, TreeSelectModule, FieldsetModule, AutoCompleteModule, InputAutocompleteComponent, InputTextModule, InputPasswordComponent, FormsModule, SelectModule, DialogComponent, InputDatePickerComponent, InputMaskComponent, TabsModule, TranslatePipe, IftaLabelModule, CheckboxModule ],
   templateUrl: './noteCreate.component.html',
   styleUrls: ['./noteCreate.component.css']
@@ -82,7 +83,7 @@ export class NoteCreateComponent implements OnInit {
       required(path.data)
   });
 
-  // Tags don't go through signal-forms (they're driven by component-inputAutocomplete), so their
+  // Tags don't go through signal-forms (they're driven by component-input-autocomplete), so their
   // length limit is checked manually here instead of via maxLength().
   public readonly _tagsMaxChars = computed(() => this._authService.maxNoteTagsChars());
   public readonly _tagsExceeded = computed(() => {

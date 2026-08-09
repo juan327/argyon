@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, OnInit, output, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, output, signal, viewChild } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
@@ -24,13 +24,14 @@ interface DecryptedAttachment extends DTOAttachment.DTOGet {
 }
 
 @Component({
-  selector: 'partial-attachmentManager',
+  selector: 'partial-attachment-manager',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, DatePipe, FormsModule, TableModule, InputTextModule, InputGroupModule, InputGroupAddonModule, FileUploadModule, TranslatePipe, DialogComponent, ButtonComponent],
   templateUrl: './attachmentManager.component.html'
 })
 
 export class AttachmentManagerComponent implements OnInit {
-  @ViewChild('attachmentFileUpload') public attachmentFileUpload?: FileUpload;
+  public attachmentFileUpload = viewChild<FileUpload>('attachmentFileUpload');
 
   private readonly _thisService = inject(AttachmentManagerService);
   private readonly _cipherService = inject(CipherService);
@@ -120,7 +121,7 @@ export class AttachmentManagerComponent implements OnInit {
   public OnCancelUpload(): void {
     this.uploadModalOpen.set(false);
     this.selectedFile.set(null);
-    this.attachmentFileUpload?.clear();
+    this.attachmentFileUpload()?.clear();
   }
 
   public OnFileSelected(event: FileSelectEvent): void {
@@ -166,7 +167,7 @@ export class AttachmentManagerComponent implements OnInit {
       await this.LoadAttachments();
     } finally {
       this.uploading.set(false);
-      this.attachmentFileUpload?.clear();
+      this.attachmentFileUpload()?.clear();
     }
   }
 

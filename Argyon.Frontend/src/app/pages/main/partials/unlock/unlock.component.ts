@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { form, FormField, minLength, required } from '@angular/forms/signals';
 import { UnlockService } from './unlock.service';
 import { InputTextComponent } from 'src/app/shared/components/inputText/inputText.component';
@@ -12,12 +12,13 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'partial-unlock',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormField, InputTextComponent, InputPasswordComponent, ButtonComponent, CardModule, DividerModule, TranslatePipe],
   templateUrl: './unlock.component.html',
 })
 
 export class UnlockComponent {
-  public readonly _thisService = inject(UnlockService);
+  public readonly thisService = inject(UnlockService);
   private readonly _alertService = inject(AlertService);
   private readonly _databaseService = inject(DatabaseService);
   private readonly _translate = inject(TranslateService);
@@ -31,16 +32,13 @@ export class UnlockComponent {
       minLength(path.password, 4)
   });
 
-  async ngOnInit() {
-  }
-
   public async OnSubmit(e: SubmitEvent) {
     e.preventDefault();
 
     const model = this.unlockForm();
     this._alertService.showLoading(this._translate.instant('unlock.validatingPassword'));
 
-    const { message, success } = await this._thisService.ValidatePassword(model.password);
+    const { message, success } = await this.thisService.ValidatePassword(model.password);
 
     this._alertService.hideLoading();
     if (success === false) {

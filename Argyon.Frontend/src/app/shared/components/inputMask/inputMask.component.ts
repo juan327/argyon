@@ -1,4 +1,4 @@
-import { Component, input, model, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
@@ -8,7 +8,8 @@ import { ButtonModule } from 'primeng/button';
 import { IftaLabelModule } from 'primeng/iftalabel';
 
 @Component({
-    selector: 'component-inputMask',
+    selector: 'component-input-mask',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [InputTextModule, InputMaskModule, FormsModule, InputGroupModule, InputGroupAddonModule, ButtonModule, IftaLabelModule],
     templateUrl: './inputMask.component.html'
 })

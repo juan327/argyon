@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { form, FormField, minLength, required, validate } from '@angular/forms/signals';
 import * as QRCode from 'qrcode';
@@ -23,6 +23,7 @@ import { IftaLabelModule } from 'primeng/iftalabel';
 
 @Component({
   selector: 'app-settings',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, SelectModule, CardModule, DividerModule, TagModule, InputOtpModule, TabsModule, ButtonComponent, FormField, InputPasswordComponent, InputTextComponent, DialogComponent, TranslatePipe, IftaLabelModule],
   templateUrl: './settings.component.html'
 })

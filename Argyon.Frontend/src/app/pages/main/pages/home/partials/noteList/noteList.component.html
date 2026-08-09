@@ -160,7 +160,7 @@
 
     <div class="flex flex-col gap-3">
         <p>{{ 'noteList.confirmDeleteNoteMessage' | translate: { name: this.deleteConfirmNote()?.name } }}</p>
-        <component-inputPassword [(value)]="this.deleteConfirmPassword"
+        <component-input-password [(value)]="this.deleteConfirmPassword"
             [placeholder]="'settings.currentPasswordPlaceholder' | translate" [label]="'settings.currentPassword' | translate" />
     </div>
 
@@ -173,5 +173,5 @@
 }
 
 @if (this.attachmentsModalNote() !== null) {
-<partial-attachmentManager [note]="this.attachmentsModalNote()!" (open)="this.attachmentsModalNote.set(null)" />
+<partial-attachment-manager [note]="this.attachmentsModalNote()!" (open)="this.attachmentsModalNote.set(null)" />
 }

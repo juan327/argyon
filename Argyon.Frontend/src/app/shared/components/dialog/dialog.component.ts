@@ -1,5 +1,5 @@
-import { CommonModule, JsonPipe } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, ContentChild, effect, inject, input, OnDestroy, OnInit, output, TemplateRef, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, contentChild, effect, inject, input, OnDestroy, OnInit, output, TemplateRef, viewChild } from '@angular/core';
 import { Dialog, DialogModule } from 'primeng/dialog';
 import { HttpService } from '../../services/http.service';
 import { ModalScrollLockService } from '../../services/modalScrollLock.service';
@@ -9,14 +9,15 @@ const MOBILE_BREAKPOINT = '(width <= 800px)';
 
 @Component({
     selector: 'component-dialog',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CommonModule, DialogModule],
     templateUrl: './dialog.component.html'
 })
 
 export class DialogComponent implements OnInit, AfterViewInit, OnDestroy {
-    @ContentChild('header') headerTemplate!: TemplateRef<any>;
-    @ContentChild('footer') footerTemplate!: TemplateRef<any>;
-    @ViewChild(Dialog) dialog!: Dialog;
+    headerTemplate = contentChild<TemplateRef<unknown>>('header');
+    footerTemplate = contentChild<TemplateRef<unknown>>('footer');
+    dialog = viewChild.required(Dialog);
 
     private readonly httpService = inject(HttpService);
     private readonly modalScrollLockService = inject(ModalScrollLockService);
@@ -52,7 +53,7 @@ export class DialogComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.isMaximizable() && window.matchMedia(MOBILE_BREAKPOINT).matches) {
             // maximize() mutates an internal field of the PrimeNG component (not a signal),
             // so its view check has to be forced so it reflects as already open in full screen.
-            this.dialog.maximize();
+            this.dialog().maximize();
             this.cdRef.detectChanges();
         }
     }

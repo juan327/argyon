@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, WritableSignal } from '@angular/core';
 import { HomeService } from './home.service';
 import { Router } from '@angular/router';
 import { DTOGeneric, DTOUser } from 'src/app/shared/dto';
@@ -20,6 +20,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NoteListComponent, NoteCreateComponent, DialogComponent, InputTextAreaComponent, SplitButtonModule, NgTemplateOutlet, MessageModule, TranslatePipe],
   templateUrl: './home.component.html'
 })
@@ -115,7 +116,7 @@ export class HomeComponent {
     await this.databaseService.StartBuild();
   }
 
-  public async OnDeleteNote(event: { note: Note, authHash: string }) {
+  public async onDeleteNote(event: { note: Note, authHash: string }) {
     const model: VMNote.VMDelete = {
       noteId: event.note.id,
       authHash: event.authHash,
