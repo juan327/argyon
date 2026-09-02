@@ -20,6 +20,11 @@
         </div>
         <div class="form-field">
             <component-input-text [formField]="this._mainSignal.name" [label]="'noteCreate.name' | translate" />
+            @if (this._mainSignal.name().touched()) {
+                @for (error of this._mainSignal.name().errors(); track $index) {
+                    <p-message severity="error" size="small" variant="simple">{{ error.message }}</p-message>
+                }
+            }
         </div>
 
         <div class="form-field">
@@ -37,6 +42,11 @@
 
         <div class="form-field">
             <component-input-text-area [formField]="this._mainSignal.description" [label]="'noteCreate.description' | translate" />
+            @if (this._mainSignal.description().touched()) {
+                @for (error of this._mainSignal.description().errors(); track $index) {
+                    <p-message severity="error" size="small" variant="simple">{{ error.message }}</p-message>
+                }
+            }
         </div>
     </div>
 

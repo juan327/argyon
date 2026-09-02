@@ -30,11 +30,12 @@ import { TabsModule } from 'primeng/tabs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { CheckboxModule } from 'primeng/checkbox';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'partial-note-create',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DecimalPipe, FormField, InputTextComponent, ButtonComponent, InputTextAreaComponent, TreeSelectModule, FieldsetModule, AutoCompleteModule, InputAutocompleteComponent, InputTextModule, InputPasswordComponent, FormsModule, SelectModule, DialogComponent, InputDatePickerComponent, InputMaskComponent, TabsModule, TranslatePipe, IftaLabelModule, CheckboxModule ],
+  imports: [DecimalPipe, FormField, InputTextComponent, ButtonComponent, InputTextAreaComponent, TreeSelectModule, FieldsetModule, AutoCompleteModule, InputAutocompleteComponent, InputTextModule, InputPasswordComponent, FormsModule, SelectModule, DialogComponent, InputDatePickerComponent, InputMaskComponent, TabsModule, TranslatePipe, IftaLabelModule, CheckboxModule, MessageModule ],
   templateUrl: './noteCreate.component.html',
   styleUrls: ['./noteCreate.component.css']
 })
@@ -77,9 +78,13 @@ export class NoteCreateComponent implements OnInit {
   public _isFavorite = signal<boolean>(false);
 
   public _mainSignal = form(this._mainForm, (path) => {
-    required(path.name),
-      maxLength(path.name, () => this._authService.maxNoteNameChars() ?? undefined),
-      maxLength(path.description, () => this._authService.maxNoteDescriptionChars() ?? undefined),
+    required(path.name, { message: this._translate.instant('noteCreate.nameRequired') }),
+      maxLength(path.name, () => this._authService.maxNoteNameChars() ?? undefined, {
+        message: () => this._translate.instant('noteCreate.nameMaxLength', { max: this._authService.maxNoteNameChars() })
+      }),
+      maxLength(path.description, () => this._authService.maxNoteDescriptionChars() ?? undefined, {
+        message: () => this._translate.instant('noteCreate.descriptionMaxLength', { max: this._authService.maxNoteDescriptionChars() })
+      }),
       required(path.data)
   });
 

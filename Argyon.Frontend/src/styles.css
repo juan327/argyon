@@ -82,4 +82,8 @@ component-input-password {
   .note-icon-color-folder {
     @apply bg-[color-mix(in_srgb,var(--p-yellow-400,#f59e0b)_15%,transparent)] text-(--p-yellow-400,#f59e0b);
   }
+
+  .link-action {
+    @apply text-center text-sm text-(--p-primary-color) no-underline cursor-pointer hover:underline;
+  }
 }

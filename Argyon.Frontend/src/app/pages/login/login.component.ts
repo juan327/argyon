@@ -15,13 +15,14 @@ import { AlertService } from 'src/app/shared/services/alert.service';
 import { DatabaseService } from 'src/app/shared/services/database.service';
 import { SystemSettingsService } from 'src/app/shared/services/systemSettings.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { JsonPipe } from '@angular/common';
 
 type Mode = 'login' | 'register';
 
 @Component({
   selector: 'app-login',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormField, InputTextComponent, InputPasswordComponent, ButtonComponent, CardModule, DividerModule, InputOtpModule, MessageModule, FormsModule, TranslatePipe],
+  imports: [FormField, InputTextComponent, InputPasswordComponent, ButtonComponent, CardModule, DividerModule, InputOtpModule, MessageModule, FormsModule, TranslatePipe, JsonPipe],
   templateUrl: './login.component.html'
 })
 
@@ -46,10 +47,10 @@ export class LoginComponent {
   });
 
   public loginSignal = form(this.loginForm, (path) => {
-    required(path.username),
-      minLength(path.username, 3),
-      required(path.password),
-      minLength(path.password, 4)
+    required(path.username, { message: this._translate.instant('common.usernameRequired') }),
+      minLength(path.username, 3, { message: this._translate.instant('common.usernameMinLength', { min: 3 }) }),
+      required(path.password, { message: this._translate.instant('common.passwordRequired') }),
+      minLength(path.password, 4, { message: this._translate.instant('common.passwordMinLength', { min: 4 }) })
   });
 
   // Second login step: filled in when the server indicates that the user
@@ -68,11 +69,11 @@ export class LoginComponent {
   });
 
   public registerSignal = form(this.registerForm, (path) => {
-    required(path.username),
-      minLength(path.username, 3),
-      required(path.password),
-      minLength(path.password, 4),
-      required(path.passwordConfirmation),
+    required(path.username, { message: this._translate.instant('common.usernameRequired') }),
+      minLength(path.username, 3, { message: this._translate.instant('common.usernameMinLength', { min: 3 }) }),
+      required(path.password, { message: this._translate.instant('common.passwordRequired') }),
+      minLength(path.password, 4, { message: this._translate.instant('common.passwordMinLength', { min: 4 }) }),
+      required(path.passwordConfirmation, { message: this._translate.instant('common.confirmPasswordRequired') }),
       validate(path.passwordConfirmation, ({ value }) => {
         const password = this.registerForm().password;
         if (value() !== password) {

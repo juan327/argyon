@@ -6,6 +6,7 @@ import { InputPasswordComponent } from 'src/app/shared/components/inputPassword/
 import { ButtonComponent } from 'src/app/shared/components/button/button.component';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from "primeng/divider";
+import { MessageModule } from 'primeng/message';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { DatabaseService } from 'src/app/shared/services/database.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -13,7 +14,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'partial-unlock',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormField, InputTextComponent, InputPasswordComponent, ButtonComponent, CardModule, DividerModule, TranslatePipe],
+  imports: [FormField, InputTextComponent, InputPasswordComponent, ButtonComponent, CardModule, DividerModule, MessageModule, TranslatePipe],
   templateUrl: './unlock.component.html',
 })
 
@@ -28,8 +29,8 @@ export class UnlockComponent {
   });
 
   public unlockSignal = form(this.unlockForm, (path) => {
-    required(path.password),
-      minLength(path.password, 4)
+    required(path.password, { message: this._translate.instant('common.passwordRequired') }),
+      minLength(path.password, 4, { message: this._translate.instant('common.passwordMinLength', { min: 4 }) })
   });
 
   public async OnSubmit(e: SubmitEvent) {

@@ -13,7 +13,12 @@
     "confirmPasswordPlaceholder": "Confirm password",
     "logIn": "Log in",
     "passwordMismatch": "Passwords do not match",
-    "unknownError": "Unknown error"
+    "unknownError": "Unknown error",
+    "usernameRequired": "Username is required",
+    "usernameMinLength": "Username must be at least {{min}} characters",
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least {{min}} characters",
+    "confirmPasswordRequired": "Please confirm your password"
   },
   "sync": {
     "complete": "Sync complete",
@@ -121,6 +126,9 @@
     "dateYear": "Year",
     "dateHour": "Hour",
     "dateFieldAtLeastOneRequired": "You must select at least one option",
+    "nameRequired": "The name is required",
+    "nameMaxLength": "Name must be at most {{max}} characters",
+    "descriptionMaxLength": "Description must be at most {{max}} characters",
     "templates": {
       "pageCategory": "Pages",
       "cardCategory": "Card",
@@ -333,10 +341,13 @@
     "saveChanges": "Save changes",
     "currentPassword": "Current password",
     "currentPasswordPlaceholder": "Enter your current password",
+    "currentPasswordRequired": "Enter your current password",
     "newPassword": "New password",
     "newPasswordPlaceholder": "Enter the new password",
+    "newPasswordRequired": "Enter the new password",
     "confirmNewPassword": "Confirm new password",
     "confirmNewPasswordPlaceholder": "Confirm the new password",
+    "confirmNewPasswordRequired": "Please confirm the new password",
     "changePassword": "Change password",
     "status": "Status:",
     "twoFactorActive": "Active",

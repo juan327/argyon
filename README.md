@@ -198,9 +198,3 @@ Functional configuration fields — **not secrets**; using an environment variab
 | [temporal-polyfill](https://github.com/fullcalendar/temporal-polyfill) | Polyfill for the `Temporal` API | MIT |
 
 *Note: symmetric content encryption (AES-256-GCM) and client-side Argon2id hashing rely on the native `Web Crypto` APIs and `argon2-browser`; no additional cryptography library is included separately.*
-
-## Additional resources
-
-- Local PrimeNG documentation used by the project: [`docs/frontend/primeng/`](docs/frontend/primeng/).
-- Angular CLI: [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli).
-</content>

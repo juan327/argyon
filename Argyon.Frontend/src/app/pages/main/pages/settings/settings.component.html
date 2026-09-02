@@ -57,16 +57,31 @@
                             <div class="form-field">
                                 <component-input-password [formField]="this.changePasswordSignal.currentPassword"
                                     [placeholder]="'settings.currentPasswordPlaceholder' | translate" [label]="'settings.currentPassword' | translate" />
+                                @if (this.changePasswordSignal.currentPassword().touched()) {
+                                    @for (error of this.changePasswordSignal.currentPassword().errors(); track $index) {
+                                        <p-message severity="error" size="small" variant="simple">{{ error.message }}</p-message>
+                                    }
+                                }
                             </div>
 
                             <div class="form-field">
                                 <component-input-password [formField]="this.changePasswordSignal.newPassword"
                                     [placeholder]="'settings.newPasswordPlaceholder' | translate" [label]="'settings.newPassword' | translate" />
+                                @if (this.changePasswordSignal.newPassword().touched()) {
+                                    @for (error of this.changePasswordSignal.newPassword().errors(); track $index) {
+                                        <p-message severity="error" size="small" variant="simple">{{ error.message }}</p-message>
+                                    }
+                                }
                             </div>
 
                             <div class="form-field">
                                 <component-input-password [formField]="this.changePasswordSignal.newPasswordConfirmation"
                                     [placeholder]="'settings.confirmNewPasswordPlaceholder' | translate" [label]="'settings.confirmNewPassword' | translate" />
+                                @if (this.changePasswordSignal.newPasswordConfirmation().touched()) {
+                                    @for (error of this.changePasswordSignal.newPasswordConfirmation().errors(); track $index) {
+                                        <p-message severity="error" size="small" variant="simple">{{ error.message }}</p-message>
+                                    }
+                                }
                             </div>
                         </div>
                         <p-divider />

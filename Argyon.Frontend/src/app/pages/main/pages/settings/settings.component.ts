@@ -8,6 +8,7 @@ import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
 import { InputOtpModule } from 'primeng/inputotp';
 import { TabsModule } from 'primeng/tabs';
+import { MessageModule } from 'primeng/message';
 import { ButtonComponent } from 'src/app/shared/components/button/button.component';
 import { InputPasswordComponent } from 'src/app/shared/components/inputPassword/inputPassword.component';
 import { InputTextComponent } from 'src/app/shared/components/inputText/inputText.component';
@@ -24,7 +25,7 @@ import { IftaLabelModule } from 'primeng/iftalabel';
 @Component({
   selector: 'app-settings',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, SelectModule, CardModule, DividerModule, TagModule, InputOtpModule, TabsModule, ButtonComponent, FormField, InputPasswordComponent, InputTextComponent, DialogComponent, TranslatePipe, IftaLabelModule],
+  imports: [FormsModule, SelectModule, CardModule, DividerModule, TagModule, InputOtpModule, TabsModule, MessageModule, ButtonComponent, FormField, InputPasswordComponent, InputTextComponent, DialogComponent, TranslatePipe, IftaLabelModule],
   templateUrl: './settings.component.html'
 })
 
@@ -65,10 +66,10 @@ export class SettingsComponent {
   });
 
   public changePasswordSignal = form(this.changePasswordForm, (path) => {
-    required(path.currentPassword),
-      required(path.newPassword),
-      minLength(path.newPassword, 4),
-      required(path.newPasswordConfirmation),
+    required(path.currentPassword, { message: this._translate.instant('settings.currentPasswordRequired') }),
+      required(path.newPassword, { message: this._translate.instant('settings.newPasswordRequired') }),
+      minLength(path.newPassword, 4, { message: this._translate.instant('common.passwordMinLength', { min: 4 }) }),
+      required(path.newPasswordConfirmation, { message: this._translate.instant('settings.confirmNewPasswordRequired') }),
       validate(path.newPasswordConfirmation, ({ value }) => {
         const newPassword = this.changePasswordForm().newPassword;
         if (value() !== newPassword) {

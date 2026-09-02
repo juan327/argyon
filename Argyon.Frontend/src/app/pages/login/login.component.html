@@ -9,19 +9,29 @@
                     <div class="form-content">
                         <div class="form-field">
                             <component-input-text [formField]="this.loginSignal.username" [placeholder]="'common.usernamePlaceholder' | translate" [label]="'common.username' | translate" />
+                            @if (this.loginSignal.username().touched()) {
+                                @for (error of this.loginSignal.username().errors(); track $index) {
+                                    <p-message severity="error" size="small" variant="simple">{{ error.message }}</p-message>
+                                }
+                            }
                         </div>
 
                         <div class="form-field">
                             <component-input-password [formField]="this.loginSignal.password" [placeholder]="'common.passwordPlaceholder' | translate" [label]="'common.password' | translate" />
+                            @if (this.loginSignal.password().touched()) {
+                                @for (error of this.loginSignal.password().errors(); track $index) {
+                                    <p-message severity="error" size="small" variant="simple">{{ error.message }}</p-message>
+                                }
+                            }
                         </div>
                     </div>
                     <p-divider />
-                    <div class="flex gap-2.5">
-                        @if (this.registrationEnabled()) {
-                            <component-button class="flex-1" (onClick)="this.onRedirectToRegister()" severity="info" [label]="'login.createAccount' | translate" />
-                        }
-                        <component-button class="flex-1" type="submit" [disabled]="this.loginSignal().invalid()" severity="success"
+                    <div class="flex flex-col gap-2.5">
+                        <component-button type="submit" [disabled]="this.loginSignal().invalid()" severity="success"
                             [label]="'common.logIn' | translate" />
+                        @if (this.registrationEnabled()) {
+                            <a class="link-action" tabindex="0" (click)="this.onRedirectToRegister()" (keydown.enter)="this.onRedirectToRegister()">{{ 'login.createAccount' | translate }}</a>
+                        }
                     </div>
                 </form>
             } @else {
@@ -56,23 +66,38 @@
                     <div class="form-content">
                         <div class="form-field">
                             <component-input-text [formField]="this.registerSignal.username" [placeholder]="'common.usernamePlaceholder' | translate" [label]="'common.username' | translate" />
+                            @if (this.registerSignal.username().touched()) {
+                                @for (error of this.registerSignal.username().errors(); track $index) {
+                                    <p-message severity="error" size="small" variant="simple">{{ error.message }}</p-message>
+                                }
+                            }
                         </div>
 
                         <div class="form-field">
                             <component-input-password [formField]="this.registerSignal.password"
                                 [placeholder]="'common.passwordPlaceholder' | translate" [label]="'common.password' | translate" />
+                            @if (this.registerSignal.password().touched()) {
+                                @for (error of this.registerSignal.password().errors(); track $index) {
+                                    <p-message severity="error" size="small" variant="simple">{{ error.message }}</p-message>
+                                }
+                            }
                         </div>
 
                         <div class="form-field">
                             <component-input-password [formField]="this.registerSignal.passwordConfirmation"
                                 [placeholder]="'common.confirmPasswordPlaceholder' | translate" [label]="'common.confirmPassword' | translate" />
+                            @if (this.registerSignal.passwordConfirmation().touched()) {
+                                @for (error of this.registerSignal.passwordConfirmation().errors(); track $index) {
+                                    <p-message severity="error" size="small" variant="simple">{{ error.message }}</p-message>
+                                }
+                            }
                         </div>
                     </div>
                     <p-divider />
-                    <div class="flex gap-2.5">
-                        <component-button class="flex-1" (onClick)="this.onRedirectToLogin()" severity="info" [label]="'common.logIn' | translate" />
-                        <component-button class="flex-1" type="submit" [disabled]="this.registerSignal().invalid()" severity="success"
+                    <div class="flex flex-col gap-2.5">
+                        <component-button type="submit" [disabled]="this.registerSignal().invalid()" severity="success"
                             [label]="'register.register' | translate" />
+                        <a class="link-action" tabindex="0" (click)="this.onRedirectToLogin()" (keydown.enter)="this.onRedirectToLogin()">{{ 'common.logIn' | translate }}</a>
                     </div>
                 </form>
             } @else {

@@ -10,6 +10,11 @@
 
                 <div class="form-field">
                     <component-input-password [formField]="this.unlockSignal.password" [placeholder]="'common.passwordPlaceholder' | translate" [label]="'common.password' | translate" />
+                    @if (this.unlockSignal.password().touched()) {
+                        @for (error of this.unlockSignal.password().errors(); track $index) {
+                            <p-message severity="error" size="small" variant="simple">{{ error.message }}</p-message>
+                        }
+                    }
                 </div>
             </div>
             <p-divider />

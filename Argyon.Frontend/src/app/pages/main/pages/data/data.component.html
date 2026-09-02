@@ -29,6 +29,11 @@
                             <div class="form-field">
                                 <component-input-password [formField]="this.exportSignal.currentPassword"
                                     [placeholder]="'data.currentPasswordPlaceholder' | translate" [label]="'data.currentPassword' | translate" />
+                                @if (this.exportSignal.currentPassword().touched()) {
+                                    @for (error of this.exportSignal.currentPassword().errors(); track $index) {
+                                        <p-message severity="error" size="small" variant="simple">{{ error.message }}</p-message>
+                                    }
+                                }
                             </div>
 
                             @if (this.exportFormat() === 'encrypted') {
@@ -56,11 +61,21 @@
                             <div class="form-field">
                                 <component-input-password [formField]="this.exportSignal.newExportPassword"
                                     [placeholder]="'data.newExportPasswordPlaceholder' | translate" [label]="'data.newExportPassword' | translate" />
+                                @if (this.exportSignal.newExportPassword().touched()) {
+                                    @for (error of this.exportSignal.newExportPassword().errors(); track $index) {
+                                        <p-message severity="error" size="small" variant="simple">{{ error.message }}</p-message>
+                                    }
+                                }
                             </div>
 
                             <div class="form-field">
                                 <component-input-password [formField]="this.exportSignal.newExportPasswordConfirmation"
                                     [placeholder]="'data.confirmExportPasswordPlaceholder' | translate" [label]="'data.confirmExportPassword' | translate" />
+                                @if (this.exportSignal.newExportPasswordConfirmation().touched()) {
+                                    @for (error of this.exportSignal.newExportPasswordConfirmation().errors(); track $index) {
+                                        <p-message severity="error" size="small" variant="simple">{{ error.message }}</p-message>
+                                    }
+                                }
                             </div>
                             }
                             }
