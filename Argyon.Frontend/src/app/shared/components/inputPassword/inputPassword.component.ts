@@ -1,4 +1,6 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, model, output, signal } from '@angular/core';
+import { FieldTree, FormField } from '@angular/forms/signals';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -10,12 +12,13 @@ import { GeneratePasswordComponent } from 'src/app/shared/components/generatePas
 @Component({
     selector: 'component-input-password',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [InputTextModule, InputGroupModule, InputGroupAddonModule, ButtonModule, KeyFilterModule, IftaLabelModule, GeneratePasswordComponent],
+    imports: [FormField, InputTextModule, InputGroupModule, InputGroupAddonModule, ButtonModule, KeyFilterModule, IftaLabelModule, GeneratePasswordComponent, NgTemplateOutlet],
     templateUrl: './inputPassword.component.html'
 })
 
 export class InputPasswordComponent {
 
+    public formField = model<FieldTree<string, string>>();
     public disableSpace = input<boolean>(false);
     public placeholder = input<string>('');
     public label = input<string>('');
@@ -43,7 +46,12 @@ export class InputPasswordComponent {
     }
 
     public applyPassword(password: string) {
-        this.value.set(password);
+        const field = this.formField();
+        if (field !== undefined) {
+            field().value.set(password);
+        } else {
+            this.value.set(password);
+        }
         this._modalOpen.set(false);
     }
 }

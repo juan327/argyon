@@ -19,7 +19,8 @@ public class InfoService : IInfoService
         var response = new DTOGeneric.DTOResponseApiData<DTOInfo.DTOVersion>();
         try
         {
-            var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "0.0.0";
+            var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            var version = assemblyVersion is null ? "0.0.0" : $"{assemblyVersion.Major}.{assemblyVersion.Minor}.{assemblyVersion.Build}";
             response.Data = new DTOInfo.DTOVersion { Version = version };
             response.StatusCode = HttpStatusCode.OK;
         }
