@@ -4,10 +4,26 @@
             {{ 'home.loadingNotes' | translate: { count: this.databaseService.syncedCount() } }}
         </p-message>
     }
+    @if (this.offlineStorage.offlineMode()) {
+        <p-message severity="warn" variant="simple">
+            {{ 'offline.readOnlyNotice' | translate }}
+            @if (this.offlineStorage.snapshotMeta()?.syncedAt == null) {
+                {{ 'offline.emptySnapshotNotice' | translate }}
+            }
+        </p-message>
+    }
+    @if (this.databaseService.syncingLocal()) {
+        <div class="flex flex-col gap-1">
+            <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
+            <span class="text-sm">{{ 'offline.syncProgress' | translate: { count: this.databaseService.syncedLocalCount() } }}</span>
+        </div>
+    }
 
     <section>
         <partial-note-list (onEditNote)="this.onEditNote($event)" (onDeleteNote)="this.onDeleteNote($event)" (onToggleFavorite)="this.onToggleFavorite($event)" [(parentNote)]="this.parentNote">
-            @if (this.authService.canManageNotes()) {
+            <p-button icon="pi pi-sync" severity="secondary" [outlined]="true" [label]="'offline.syncButton' | translate"
+                [disabled]="this.databaseService.syncingLocal()" (onClick)="this.onOpenSyncModal()" />
+            @if (this.canEdit()) {
                 <p-splitbutton [label]="'home.newPassword' | translate" severity="success" icon="pi pi-key" (onClick)="onOpenNote({note: null, template: 'password'})" [model]="this.items()" />
             }
         </partial-note-list>
@@ -48,6 +64,27 @@
         <partial-note-create [note]="localModalFolder.note" (onCreate)="this.onCreateFolder($event)" (onCancel)="this.modalFolder.set({ open: false, note: null })" [parentNote]="this.parentNote()" [isFolder]="true" #folder />
         <ng-template #footer>
             <ng-container *ngTemplateOutlet="folder.footer()" />
+        </ng-template>
+    </component-dialog>
+}
+
+@if (this.syncModalOpen()) {
+    <component-dialog (open)="this.syncModalOpen.set($event)" [small]="true">
+        <ng-template #header>
+            <h2>{{ 'offline.syncConfirmTitle' | translate }}</h2>
+        </ng-template>
+
+        <div class="form-content">
+            <p>{{ 'offline.syncConfirmMessage' | translate }}</p>
+            <div class="form-field">
+                <component-input-password [(value)]="this.syncPassword" [placeholder]="'common.passwordPlaceholder' | translate" [label]="'common.password' | translate" />
+            </div>
+        </div>
+
+        <ng-template #footer>
+            <component-button (onClick)="this.syncModalOpen.set(false)" severity="secondary" [label]="'common.cancel' | translate" />
+            <component-button (onClick)="this.onConfirmSync()" severity="info" icon="pi pi-sync"
+                [disabled]="this.syncPassword().length === 0 || this.databaseService.syncingLocal()" [label]="'offline.syncButton' | translate" />
         </ng-template>
     </component-dialog>
 }

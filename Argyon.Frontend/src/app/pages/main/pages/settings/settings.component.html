@@ -2,8 +2,9 @@
     <p-tabs value="0">
         <p-tablist>
             <p-tab value="0">{{ 'settings.preferencesTab' | translate }}</p-tab>
-            <p-tab value="1">{{ 'settings.passwordTab' | translate }}</p-tab>
-            <p-tab value="2">{{ 'settings.twoFactorTab' | translate }}</p-tab>
+            <p-tab value="1" [disabled]="this.offlineStorage.offlineMode()">{{ 'settings.passwordTab' | translate }}</p-tab>
+            <p-tab value="2" [disabled]="this.offlineStorage.offlineMode()">{{ 'settings.twoFactorTab' | translate }}</p-tab>
+            <p-tab value="3">{{ 'offline.tabTitle' | translate }}</p-tab>
         </p-tablist>
         <p-tabpanels>
             <p-tabpanel value="0">
@@ -124,6 +125,38 @@
                     </p-card>
                 }
             </p-tabpanel>
+
+            <p-tabpanel value="3">
+                <p-card>
+                    <div class="form-content">
+                        <div class="flex items-center gap-2.5">
+                            <p-toggleswitch inputId="offlineMode" [ngModel]="this.offlineStorage.offlineMode()"
+                                (ngModelChange)="this.onToggleOfflineMode($event)" />
+                            <label for="offlineMode">{{ 'offline.offlineModeLabel' | translate }}</label>
+                        </div>
+                        <p class="text-sm text-(--p-text-muted-color)">{{ 'offline.offlineModeNotice' | translate }}</p>
+
+                        <p-divider />
+
+                        <p class="text-sm text-(--p-text-muted-color)">{{ 'offline.syncNotice' | translate }}</p>
+                        <p class="text-sm text-(--p-text-muted-color)">
+                            @if (this.offlineStorage.snapshotMeta()?.syncedAt; as syncedAt) {
+                                {{ 'offline.lastSync' | translate }} {{ syncedAt | date: this.settingsService.dateTimeFormat() }}
+                            } @else {
+                                {{ 'offline.neverSynced' | translate }}
+                            }
+                        </p>
+                        @if (this.databaseService.syncingLocal()) {
+                            <p-progressbar mode="indeterminate" [style]="{ height: '6px' }" />
+                            <p class="text-sm">{{ 'offline.syncProgress' | translate: { count: this.databaseService.syncedLocalCount() } }}</p>
+                        }
+                        <div class="flex gap-2.5 mt-1">
+                            <component-button icon="pi pi-sync" severity="info" width="auto" [disabled]="this.databaseService.syncingLocal()"
+                                [label]="'offline.syncButton' | translate" (onClick)="this.onOpenSyncModal()" />
+                        </div>
+                    </div>
+                </p-card>
+            </p-tabpanel>
         </p-tabpanels>
     </p-tabs>
 </section>
@@ -189,6 +222,48 @@
     <ng-template #footer>
         <component-button (onClick)="this.disableModalOpen.set(false)" severity="secondary" [label]="'common.cancel' | translate" />
         <component-button (onClick)="this.onConfirmDisable()" severity="danger" [label]="'settings.disable' | translate" />
+    </ng-template>
+</component-dialog>
+}
+
+@if (this.enableOfflineModalOpen()) {
+<component-dialog (open)="this.enableOfflineModalOpen.set($event)" [small]="true">
+    <ng-template #header>
+        <h2>{{ 'offline.enableConfirmTitle' | translate }}</h2>
+    </ng-template>
+
+    <div class="form-content">
+        <p>{{ 'offline.enableConfirmMessage' | translate }}</p>
+        <div class="form-field">
+            <component-input-password [(value)]="this.enableOfflinePassword" [placeholder]="'common.passwordPlaceholder' | translate" [label]="'common.password' | translate" />
+        </div>
+    </div>
+
+    <ng-template #footer>
+        <component-button (onClick)="this.enableOfflineModalOpen.set(false)" severity="secondary" [label]="'common.cancel' | translate" />
+        <component-button (onClick)="this.onConfirmEnableOffline()" severity="warn" [disabled]="this.enableOfflinePassword().length === 0 || this.enableOfflineLoading()"
+            [label]="'offline.offlineModeLabel' | translate" />
+    </ng-template>
+</component-dialog>
+}
+
+@if (this.syncModalOpen()) {
+<component-dialog (open)="this.syncModalOpen.set($event)" [small]="true">
+    <ng-template #header>
+        <h2>{{ 'offline.syncConfirmTitle' | translate }}</h2>
+    </ng-template>
+
+    <div class="form-content">
+        <p>{{ 'offline.syncConfirmMessage' | translate }}</p>
+        <div class="form-field">
+            <component-input-password [(value)]="this.syncPassword" [placeholder]="'common.passwordPlaceholder' | translate" [label]="'common.password' | translate" />
+        </div>
+    </div>
+
+    <ng-template #footer>
+        <component-button (onClick)="this.syncModalOpen.set(false)" severity="secondary" [label]="'common.cancel' | translate" />
+        <component-button (onClick)="this.onConfirmSync()" severity="info" icon="pi pi-sync"
+            [disabled]="this.syncPassword().length === 0 || this.databaseService.syncingLocal()" [label]="'offline.syncButton' | translate" />
     </ng-template>
 </component-dialog>
 }

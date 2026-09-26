@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 import { environment } from "src/environments/environment";
 import { TranslateService } from "@ngx-translate/core";
+import { OfflineStorageService } from "./offlineStorage.service";
 
 // Marks a request as an opportunistic/silent auth check (e.g. Ping(false) on the public
 // login/register pages). authInterceptor reads this to know that if its fallback silent-refresh
@@ -19,6 +20,7 @@ export class HttpService {
   private apiUrl = environment.apiUrl;
   private readonly _router = inject(Router);
   private readonly _translate = inject(TranslateService);
+  private readonly _offlineStorage = inject(OfflineStorageService);
 
   // Incremented every time a request responds with 401, so other
   // components (e.g. modals) can react by closing.
@@ -32,6 +34,10 @@ export class HttpService {
     if (status !== 401) return;
     if (code === 'vault_reauth_required') return;
     if (suppressRedirect) return;
+    // Offline mode must never force a logout on its own: a stray authenticated call left over
+    // from before entering offline mode (e.g. a page that fetches on init) must not kick the user
+    // out. The only way to leave a session while offline is the explicit, manual logout.
+    if (this._offlineStorage.offlineMode()) return;
     this.sessionExpired.update(value => value + 1);
     this._router.navigate(['/login']);
   }
@@ -168,7 +174,7 @@ export class HttpService {
     {
       console.error(error);
       this.handleUnauthorized(error.status, error?.error?.code);
-      const response = error.error as T;
+      const response = error?.error as T ?? ({ message: this._translate.instant('common.unknownError') } as T);
       return {
         response,
         success: false,
@@ -188,7 +194,7 @@ export class HttpService {
     {
       console.error(error);
       this.handleUnauthorized(error.status, error?.error?.code);
-      const response = error.error as T;
+      const response = error?.error as T ?? ({ message: this._translate.instant('common.unknownError') } as T);
       return {
         response,
         success: false,
@@ -221,7 +227,7 @@ export class HttpService {
     {
       console.error(error);
       this.handleUnauthorized(error.status, error?.error?.code);
-      const response = error.error as T;
+      const response = error?.error as T ?? ({ message: this._translate.instant('common.unknownError') } as T);
       return {
         response,
         success: false,
@@ -242,7 +248,7 @@ export class HttpService {
     {
       console.error(error);
       this.handleUnauthorized(error.status, error?.error?.code);
-      const response = error.error as T;
+      const response = error?.error as T ?? ({ message: this._translate.instant('common.unknownError') } as T);
       return {
         response,
         success: false,
@@ -250,6 +256,24 @@ export class HttpService {
     }
   }
 
+
+  // Pings the server without any of Ping()'s side effects (no /login redirect, no
+  // sessionExpired signal), so callers can tell a genuinely expired session ("unauthorized") apart
+  // from the server simply being unreachable ("offline", e.g. no network or a 504 from the
+  // service worker) before deciding whether to offer switching to offline mode.
+  public async CheckConnection(): Promise<'online' | 'unauthorized' | 'offline'> {
+    try {
+      await firstValueFrom(this.http.get(`${this.apiUrl}api/User/Ping`, {
+        responseType: 'text' as any,
+        withCredentials: true,
+        context: new HttpContext().set(SILENT_401, true)
+      }));
+      return 'online';
+    } catch (error: any) {
+      console.error(error);
+      return error.status === 401 ? 'unauthorized' : 'offline';
+    }
+  }
 
   public async Ping(redirectToLogin: boolean = true): Promise<boolean> {
     try {

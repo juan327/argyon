@@ -4,7 +4,7 @@ import { Injectable } from "@angular/core";
 
 export class LocalStorageService {
 
-  public SetItem(key: 'user_username' | 'app_settings' | 'note_list_filters' | 'generate_password_settings', value: any): void {
+  public SetItem(key: 'user_username' | 'app_settings' | 'note_list_filters' | 'generate_password_settings' | 'offline_settings', value: any): void {
     if (value === undefined) {
       localStorage.removeItem(key);
       return;
@@ -15,7 +15,7 @@ export class LocalStorageService {
     localStorage.setItem(key, value);
   }
 
-  public GetItem<T>(key: 'user_username' | 'app_settings' | 'note_list_filters' | 'generate_password_settings'): T | null {
+  public GetItem<T>(key: 'user_username' | 'app_settings' | 'note_list_filters' | 'generate_password_settings' | 'offline_settings'): T | null {
     const value = localStorage.getItem(key);
     if (value === null) {
       return null;

@@ -7,6 +7,8 @@ import { NoteCreateComponent } from './partials/noteCreate/noteCreate.component'
 import { VMFolder, VMNote } from 'src/app/shared/vm';
 import { Note, Note_Data, NoteTemplate } from 'src/app/shared/entities/note';
 import { DialogComponent } from "src/app/shared/components/dialog/dialog.component";
+import { ButtonComponent } from "src/app/shared/components/button/button.component";
+import { InputPasswordComponent } from "src/app/shared/components/inputPassword/inputPassword.component";
 import { GenericService } from 'src/app/shared/services/generic.service';
 import { NgTemplateOutlet } from '@angular/common';
 import { DatabaseService } from 'src/app/shared/services/database.service';
@@ -15,13 +17,17 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { MenuItem } from 'primeng/api';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { OfflineStorageService } from 'src/app/shared/services/offlineStorage.service';
+import { OfflineService } from 'src/app/shared/services/offline.service';
 import { MessageModule } from 'primeng/message';
+import { ButtonModule } from 'primeng/button';
+import { ProgressBarModule } from 'primeng/progressbar';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NoteListComponent, NoteCreateComponent, DialogComponent, InputTextAreaComponent, SplitButtonModule, NgTemplateOutlet, MessageModule, TranslatePipe],
+  imports: [NoteListComponent, NoteCreateComponent, DialogComponent, ButtonComponent, InputPasswordComponent, InputTextAreaComponent, SplitButtonModule, NgTemplateOutlet, MessageModule, ButtonModule, ProgressBarModule, TranslatePipe],
   templateUrl: './home.component.html'
 })
 
@@ -30,6 +36,8 @@ export class HomeComponent {
   private readonly thisService = inject(HomeService);
   public readonly databaseService = inject(DatabaseService);
   public readonly authService = inject(AuthService);
+  public readonly offlineStorage = inject(OfflineStorageService);
+  private readonly _offlineService = inject(OfflineService);
   private readonly _alertService = inject(AlertService);
   private readonly _translate = inject(TranslateService);
 
@@ -44,6 +52,11 @@ export class HomeComponent {
     note: null as Note | null
   });
   public openNoteDelete = signal(false);
+
+  public syncModalOpen = signal(false);
+  public syncPassword = signal('');
+
+  public canEdit = computed(() => this.authService.canManageNotes());
 
   // Computed (rather than built once in the constructor) so the labels
   // re-translate reactively whenever the active language changes.
@@ -117,6 +130,7 @@ export class HomeComponent {
   }
 
   public async onDeleteNote(event: { note: Note, authHash: string }) {
+    if (this._offlineService.NotifyOfflineAction()) return;
     const model: VMNote.VMDelete = {
       noteId: event.note.id,
       authHash: event.authHash,
@@ -146,8 +160,24 @@ export class HomeComponent {
     await this.databaseService.StartBuild();
   }
 
+  public onOpenSyncModal() {
+    this.syncPassword.set('');
+    this.syncModalOpen.set(true);
+  }
+
+  public async onConfirmSync() {
+    const { message, success } = await this.databaseService.SyncToLocal(this.syncPassword());
+    if (success === false) {
+      this._alertService.showError(message);
+      return;
+    }
+    this.syncModalOpen.set(false);
+    this.syncPassword.set('');
+    this._alertService.showSuccess(message);
+  }
+
   public async onEditNote(note: Note) {
-    // The edit button is already disabled while loading (see noteList.component.html); this is
+    // The edit button is already disabled while loading (see noteList.component.ts); this is
     // a second barrier in case it gets invoked through another path.
     if (this.databaseService.loadingDatabase()) {
       this._alertService.showWarn(this._translate.instant('home.waitForNotesToLoad'));

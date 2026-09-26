@@ -5,6 +5,7 @@ import { catchError, from, switchMap, throwError } from "rxjs";
 import { AuthService } from "../services/auth.service";
 import { TokenRefreshService } from "../services/tokenRefresh.service";
 import { SILENT_401 } from "../services/http.service";
+import { OfflineStorageService } from "../services/offlineStorage.service";
 
 // Distinguishes the three ways a 401 can happen in this app and reacts accordingly:
 // - "vault_reauth_required": the access/refresh tokens are fine, but the master password
@@ -15,11 +16,18 @@ import { SILENT_401 } from "../services/http.service";
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const tokenRefreshService = inject(TokenRefreshService);
+  const offlineStorage = inject(OfflineStorageService);
   const router = inject(Router);
 
   return next(req).pipe(
     catchError((error: unknown) => {
       if ((error instanceof HttpErrorResponse) === false || error.status !== 401) {
+        return throwError(() => error);
+      }
+
+      // Offline mode must never try to renew the access token: any request that still slips
+      // through while it's on is left to fail as-is.
+      if (offlineStorage.offlineMode()) {
         return throwError(() => error);
       }
 

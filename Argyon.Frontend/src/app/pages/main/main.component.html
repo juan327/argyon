@@ -1,11 +1,20 @@
-@if (this.authService.unlocked())
+<div class="flex flex-col h-dvh">
+@if (this.offlineStorage.offlineMode()) {
+<partial-offline-banner />
+}
+
+@if (this.offlineStorage.serverUnreachable())
+{
+<partial-connection-error />
+}
+@else if (this.authService.unlocked())
 {
 @if (this.screenWidth() < this.breakWidth) { <p-drawer [(visible)]="this.showSidebar" [closable]="false" [style]="{ width: '15rem' }">
     <partial-nav (onCloseNav)="this.onToggleSidebar()" />
     </p-drawer>
     }
 
-    <main class="grid gap-4 p-4 h-dvh overflow-hidden max-[800px]:grid-cols-1" [class.grid-cols-1]="!this.showSidebar()" [class.sidebar-grid]="this.showSidebar()">
+    <main class="grid gap-4 p-4 flex-1 min-h-0 overflow-hidden max-[800px]:grid-cols-1" [class.grid-cols-1]="!this.showSidebar()" [class.sidebar-grid]="this.showSidebar()">
         @if (this.screenWidth() >= this.breakWidth)
         {
         <section class="nav h-full min-h-0 overflow-y-auto" [class.hidden]="!this.showSidebar()">
@@ -22,3 +31,4 @@
     {
     <partial-unlock />
     }
+</div>

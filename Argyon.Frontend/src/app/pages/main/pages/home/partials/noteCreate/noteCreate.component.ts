@@ -17,6 +17,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { InputAutocompleteComponent } from 'src/app/shared/components/inputAutocomplete/inputAutocomplete.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { AlertService } from 'src/app/shared/services/alert.service';
+import { OfflineService } from 'src/app/shared/services/offline.service';
 import { InputPasswordComponent } from "src/app/shared/components/inputPassword/inputPassword.component";
 import { TreeSelectModule } from 'primeng/treeselect';
 import { TreeNode } from 'primeng/api';
@@ -47,6 +48,7 @@ export class NoteCreateComponent implements OnInit {
   private readonly cipherService = inject(CipherService);
   private readonly databaseService = inject(DatabaseService);
   private readonly _alertService = inject(AlertService);
+  private readonly _offlineService = inject(OfflineService);
   private readonly _translate = inject(TranslateService);
   private readonly _authService = inject(AuthService);
 
@@ -330,6 +332,7 @@ export class NoteCreateComponent implements OnInit {
       this._alertService.showWarn(this._translate.instant('noteCreate.invalidFormTitle'), this._translate.instant('noteCreate.invalidFormMessage'));
       return;
     }
+    if (this._offlineService.NotifyOfflineAction()) return;
 
     const modelForm = this._mainForm();
 

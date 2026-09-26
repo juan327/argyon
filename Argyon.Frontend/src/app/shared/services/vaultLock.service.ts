@@ -5,6 +5,7 @@ import { AuthService } from "./auth.service";
 import { AlertService } from "./alert.service";
 import { HttpService } from "./http.service";
 import { DTOGeneric } from "../dto";
+import { OfflineStorageService } from "./offlineStorage.service";
 
 // Non-blocking heads-up shown shortly before the hard lock, so the user isn't surprised mid-edit.
 const WARNING_BEFORE_LOCK_MS = 60_000;
@@ -23,6 +24,7 @@ export class VaultLockService {
   private readonly translate = inject(TranslateService);
   private readonly httpService = inject(HttpService);
   private readonly document = inject(DOCUMENT);
+  private readonly offlineStorage = inject(OfflineStorageService);
 
   private warningTimeoutId: ReturnType<typeof setTimeout> | null = null;
   private lockTimeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -46,7 +48,7 @@ export class VaultLockService {
     // auto-lock. Hiding the tab (switching away, minimizing) just stops the heartbeat - the
     // already-scheduled deadline keeps counting down and can still lock while the tab is hidden.
     this.document.addEventListener('visibilitychange', () => {
-      if (this.authService.unlocked() === false) {
+      if (this.authService.unlocked() === false || this.offlineStorage.offlineMode()) {
         return;
       }
       if (this.document.visibilityState === 'visible') {
@@ -78,7 +80,7 @@ export class VaultLockService {
       this.authService.Lock();
     }, freshnessMs);
 
-    if (this.document.visibilityState === 'visible') {
+    if (this.document.visibilityState === 'visible' && this.offlineStorage.offlineMode() === false) {
       this.startHeartbeat(freshnessMs);
     }
   }
@@ -113,6 +115,7 @@ export class VaultLockService {
   // heartbeat from now. A failure (e.g. vault_reauth_required) needs no handling here:
   // authInterceptor already locks the vault, which the effect() above reacts to.
   private async touchVault(): Promise<void> {
+    if (this.offlineStorage.offlineMode()) return;
     const { success } = await this.httpService.Post<DTOGeneric.DTOResponseApi>('User/TouchVault', {});
     if (success && this.authService.unlocked()) {
       this.startTimer();

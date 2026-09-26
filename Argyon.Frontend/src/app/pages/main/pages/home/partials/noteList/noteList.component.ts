@@ -7,6 +7,7 @@ import { DatabaseService } from 'src/app/shared/services/database.service';
 import { TagModule } from 'primeng/tag';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { OfflineService } from 'src/app/shared/services/offline.service';
 import { SettingsService } from 'src/app/shared/services/settings.service';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
@@ -48,6 +49,7 @@ export class NoteListComponent {
   private readonly _alertService = inject(AlertService);
   public readonly settingsService = inject(SettingsService);
   public readonly authService = inject(AuthService);
+  private readonly _offlineService = inject(OfflineService);
   private readonly _translate = inject(TranslateService);
   private readonly _localStorageService = inject(LocalStorageService);
 
@@ -77,6 +79,8 @@ export class NoteListComponent {
   public hideNamesAndTags = signal(this._storedFilters?.hideNamesAndTags ?? false);
 
   public readonly hiddenTextPlaceholder = '••••••••';
+
+  public canEdit = computed(() => this.authService.canManageNotes());
 
   public breadcrumb = computed(() => {
     const ids = this._folderPath();
@@ -153,13 +157,16 @@ export class NoteListComponent {
   }
 
   private _buildActionsMenu(note: Note): MenuItem[] {
-    if (this.authService.canManageNotes() === false) return [];
+    if (this.canEdit() === false) return [];
 
     const items: MenuItem[] = [];
     items.push({
       label: this._translate.instant(note.isFavorite ? 'noteList.removeFromFavorites' : 'noteList.addToFavorites'),
       icon: note.isFavorite ? 'pi pi-star-fill' : 'pi pi-star',
-      command: () => this.onToggleFavorite.emit(note),
+      command: () => {
+        if (this._offlineService.NotifyOfflineAction()) return;
+        this.onToggleFavorite.emit(note);
+      },
     });
     if (note.isFolder) {
       items.push({
@@ -171,7 +178,10 @@ export class NoteListComponent {
       items.push({
         label: this._translate.instant('noteList.manageAttachments'),
         icon: 'pi pi-paperclip',
-        command: () => this.attachmentsModalNote.set(note),
+        command: () => {
+          if (this._offlineService.NotifyOfflineAction()) return;
+          this.attachmentsModalNote.set(note);
+        },
       });
     }
     items.push({
@@ -193,7 +203,7 @@ export class NoteListComponent {
 
     if (note.isFolder) {
       this.OnGoToFolder(note);
-    } else if (this.authService.canManageNotes()) {
+    } else if (this.canEdit()) {
       this.OnEditNote(note);
     }
   }

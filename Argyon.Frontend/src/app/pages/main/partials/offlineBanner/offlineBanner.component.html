@@ -1,0 +1,17 @@
+@if (this.dismissed() === false) {
+<div class="w-full grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 py-2 border-b border-(--p-yellow-400,#f59e0b) bg-[color-mix(in_srgb,var(--p-yellow-400,#f59e0b)_15%,transparent)]">
+    <span></span>
+    <span class="text-sm font-bold text-center text-(--p-yellow-400,#f59e0b)">
+        {{ 'offline.bannerMessage' | translate }}
+        @if (this.snapshotDate(); as date) {
+            {{ 'offline.lastSync' | translate }} {{ date | date: this.settingsService.dateTimeFormat() }}
+        } @else {
+            {{ 'offline.neverSynced' | translate }}
+        }
+    </span>
+    <div class="flex items-center justify-end gap-2">
+        <component-button size="small" width="auto" severity="warn" [label]="'offline.exitButton' | translate" (onClick)="this.onExitOfflineMode()" />
+        <component-button size="small" width="auto" severity="secondary" icon="pi pi-times" [rounded]="true" [tooltip]="'offline.hideBanner' | translate" (onClick)="this.onDismiss()" />
+    </div>
+</div>
+}

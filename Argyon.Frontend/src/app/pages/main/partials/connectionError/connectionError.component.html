@@ -1,0 +1,18 @@
+<section class="w-full flex-1 min-h-0 overflow-y-auto flex justify-center items-center p-4">
+    <p-card class="max-w-md">
+        <div class="flex flex-col gap-3">
+            <h2 class="text-center">{{ 'offline.connectionErrorTitle' | translate }}</h2>
+            <p-divider />
+            <p>{{ 'offline.connectionErrorMessage' | translate }}</p>
+            @if (this.canEnterOffline() === false) {
+                <p-message severity="warn" variant="simple">{{ 'offline.noLocalData' | translate }}</p-message>
+            }
+            <p-divider />
+            <div class="flex flex-col gap-2">
+                <component-button icon="pi pi-refresh" severity="info" [disabled]="this.retrying()" [label]="'offline.retry' | translate" (onClick)="this.onRetry()" />
+                <component-button icon="pi pi-wifi" severity="warn" [disabled]="this.canEnterOffline() === false" [label]="'offline.enterOffline' | translate" (onClick)="this.onEnterOffline()" />
+                <component-button icon="pi pi-sign-in" severity="secondary" [label]="'offline.goToLogin' | translate" (onClick)="this.onGoToLogin()" />
+            </div>
+        </div>
+    </p-card>
+</section>

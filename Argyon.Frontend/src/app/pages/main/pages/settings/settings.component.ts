@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { form, FormField, minLength, required, validate } from '@angular/forms/signals';
 import * as QRCode from 'qrcode';
@@ -9,6 +10,8 @@ import { TagModule } from 'primeng/tag';
 import { InputOtpModule } from 'primeng/inputotp';
 import { TabsModule } from 'primeng/tabs';
 import { MessageModule } from 'primeng/message';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { ProgressBarModule } from 'primeng/progressbar';
 import { ButtonComponent } from 'src/app/shared/components/button/button.component';
 import { InputPasswordComponent } from 'src/app/shared/components/inputPassword/inputPassword.component';
 import { InputTextComponent } from 'src/app/shared/components/inputText/inputText.component';
@@ -17,6 +20,8 @@ import { AlertService } from 'src/app/shared/services/alert.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { SettingsService } from 'src/app/shared/services/settings.service';
 import { DatabaseService } from 'src/app/shared/services/database.service';
+import { OfflineStorageService } from 'src/app/shared/services/offlineStorage.service';
+import { OfflineService } from 'src/app/shared/services/offline.service';
 import { ChangePasswordService } from './changePassword.service';
 import { TwoFactorService } from './twoFactor.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -25,15 +30,17 @@ import { IftaLabelModule } from 'primeng/iftalabel';
 @Component({
   selector: 'app-settings',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, SelectModule, CardModule, DividerModule, TagModule, InputOtpModule, TabsModule, MessageModule, ButtonComponent, FormField, InputPasswordComponent, InputTextComponent, DialogComponent, TranslatePipe, IftaLabelModule],
+  imports: [DatePipe, FormsModule, SelectModule, CardModule, DividerModule, TagModule, InputOtpModule, TabsModule, MessageModule, ToggleSwitchModule, ProgressBarModule, ButtonComponent, FormField, InputPasswordComponent, InputTextComponent, DialogComponent, TranslatePipe, IftaLabelModule],
   templateUrl: './settings.component.html'
 })
 
 export class SettingsComponent {
   public readonly settingsService = inject(SettingsService);
   public readonly authService = inject(AuthService);
+  public readonly offlineStorage = inject(OfflineStorageService);
+  private readonly _offlineService = inject(OfflineService);
   private readonly _alertService = inject(AlertService);
-  private readonly _databaseService = inject(DatabaseService);
+  public readonly databaseService = inject(DatabaseService);
   private readonly _changePasswordService = inject(ChangePasswordService);
   private readonly _twoFactorService = inject(TwoFactorService);
   private readonly _translate = inject(TranslateService);
@@ -53,6 +60,13 @@ export class SettingsComponent {
 
   public recoveryCodesModalOpen = signal(false);
   public recoveryCodes = signal<string[]>([]);
+
+  public enableOfflineModalOpen = signal(false);
+  public enableOfflinePassword = signal('');
+  public enableOfflineLoading = signal(false);
+
+  public syncModalOpen = signal(false);
+  public syncPassword = signal('');
 
   public language = signal(this.settingsService.settings().language);
   public timezone = signal(this.settingsService.settings().timezone);
@@ -92,7 +106,7 @@ export class SettingsComponent {
       monthYearFormat: this.monthYearFormat(),
     });
 
-    await this._databaseService.StartBuild();
+    await this.databaseService.StartBuild();
     this._alertService.hideLoading();
     this._alertService.showSuccess(this._translate.instant('settings.configSaved'));
   }
@@ -117,6 +131,55 @@ export class SettingsComponent {
       newPassword: '',
       newPasswordConfirmation: ''
     });
+    this._alertService.showSuccess(message);
+  }
+
+  public onToggleOfflineMode(value: boolean) {
+    if (value) {
+      this.enableOfflinePassword.set('');
+      this.enableOfflineModalOpen.set(true);
+      return;
+    }
+
+    this._alertService.showConfirmation({
+      title: this._translate.instant('offline.disableConfirmTitle'),
+      message: this._translate.instant('offline.disableConfirmMessage'),
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: this._translate.instant('offline.exitButton'),
+      acceptSeverity: 'warn',
+      accept: async () => {
+        await this._offlineService.DisableOffline();
+      },
+    });
+  }
+
+  public async onConfirmEnableOffline() {
+    this.enableOfflineLoading.set(true);
+    const { message, success } = await this._offlineService.EnableOffline(this.enableOfflinePassword());
+    this.enableOfflineLoading.set(false);
+
+    if (success === false) {
+      this._alertService.showError(message);
+      return;
+    }
+
+    this.enableOfflineModalOpen.set(false);
+    this.enableOfflinePassword.set('');
+  }
+
+  public onOpenSyncModal() {
+    this.syncPassword.set('');
+    this.syncModalOpen.set(true);
+  }
+
+  public async onConfirmSync() {
+    const { message, success } = await this.databaseService.SyncToLocal(this.syncPassword());
+    if (success === false) {
+      this._alertService.showError(message);
+      return;
+    }
+    this.syncModalOpen.set(false);
+    this.syncPassword.set('');
     this._alertService.showSuccess(message);
   }
 

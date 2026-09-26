@@ -9,6 +9,8 @@ import { DatabaseService } from 'src/app/shared/services/database.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { TokenRefreshService } from 'src/app/shared/services/tokenRefresh.service';
+import { OfflineStorageService } from 'src/app/shared/services/offlineStorage.service';
+import { OfflineService } from 'src/app/shared/services/offline.service';
 
 @Component({
     selector: 'partial-nav',
@@ -25,6 +27,8 @@ export class NavComponent {
     private readonly _translate = inject(TranslateService);
     private readonly _alertService = inject(AlertService);
     private readonly _tokenRefreshService = inject(TokenRefreshService);
+    public readonly offlineStorage = inject(OfflineStorageService);
+    private readonly _offlineService = inject(OfflineService);
 
     public onCloseNav = output<void>();
 
@@ -56,6 +60,9 @@ export class NavComponent {
         // Read so this computed re-evaluates (and re-highlights the active item)
         // whenever the route changes.
         this.currentUrl();
+        // Read so items depending on server connectivity (users/system/about) get
+        // enabled/disabled reactively as offline mode is toggled.
+        const isOffline = this.offlineStorage.offlineMode();
 
         const accountGroup: MenuItem = {
             label: this._translate.instant('nav.accountGroup'),
@@ -127,6 +134,7 @@ export class NavComponent {
                 label: this._translate.instant('nav.about'),
                 icon: 'pi pi-info-circle',
                 styleClass: this.activeStyleClass('/about'),
+                disabled: isOffline,
                 command: () => {
                     this.onCloseNav.emit();
                     this._router.navigate(['/about']);
@@ -139,6 +147,7 @@ export class NavComponent {
                 label: this._translate.instant('nav.users'),
                 icon: 'pi pi-users',
                 styleClass: this.activeStyleClass('/users'),
+                disabled: isOffline,
                 command: () => {
                     this.onCloseNav.emit();
                     this._router.navigate(['/users']);
@@ -151,6 +160,7 @@ export class NavComponent {
                 label: this._translate.instant('nav.system'),
                 icon: 'pi pi-shield',
                 styleClass: this.activeStyleClass('/system'),
+                disabled: isOffline,
                 command: () => {
                     this.onCloseNav.emit();
                     this._router.navigate(['/system']);
@@ -178,19 +188,28 @@ export class NavComponent {
     }
 
     public logout() {
+        const isOffline = this.offlineStorage.offlineMode();
+
         this._alertService.showConfirmation({
             title: this._translate.instant('nav.confirmLogOutTitle'),
-            message: this._translate.instant('nav.confirmLogOutMessage'),
+            // Offline, User/Logout can't be reached to revoke the server-side session: warn up
+            // front that a real login (which needs connectivity) will be required afterwards.
+            message: this._translate.instant(isOffline ? 'offline.logoutOfflineWarning' : 'nav.confirmLogOutMessage'),
             icon: 'pi pi-exclamation-triangle',
             acceptLabel: this._translate.instant('nav.logOut'),
             acceptSeverity: 'danger',
             accept: async () => {
-                // DatabaseService is an app-wide singleton (it is not destroyed on navigation): if a
-                // sync stream was left open, it has to be closed here or it would keep running after going back to /login.
-                this._databaseService.CloseStream();
-                this._tokenRefreshService.stop();
                 this._alertService.showLoading(this._translate.instant('nav.loggingOut'));
-                await this.authService.Logout();
+                if (isOffline) {
+                    await this._offlineService.LogoutOffline();
+                } else {
+                    // DatabaseService is an app-wide singleton (it is not destroyed on navigation): if a
+                    // sync stream was left open, it has to be closed here or it would keep running after going back to /login.
+                    this._databaseService.CloseStream();
+                    this._tokenRefreshService.stop();
+                    await this.authService.Logout();
+                    await this._offlineService.ClearLocalData();
+                }
                 this._alertService.hideLoading();
                 this._router.navigate(['/login']);
             }

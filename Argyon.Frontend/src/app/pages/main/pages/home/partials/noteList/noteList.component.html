@@ -131,7 +131,7 @@
                         <p-button [label]="'noteList.open' | translate" severity="warn" size="small"
                             (onClick)="this.OnGoToFolder(item)" />
                         }
-                    } @else if (this.authService.canManageNotes()) {
+                    } @else if (this.canEdit()) {
                     <p-splitbutton [label]="'common.edit' | translate" severity="info" size="small"
                         [buttonDisabled]="this.databaseService.loadingDatabase()" (onClick)="this.OnEditNote(item)"
                         [model]="item.actionsMenu" />

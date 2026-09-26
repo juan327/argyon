@@ -12,6 +12,7 @@ import { ButtonComponent } from 'src/app/shared/components/button/button.compone
 import { InputPasswordComponent } from 'src/app/shared/components/inputPassword/inputPassword.component';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { OfflineStorageService } from 'src/app/shared/services/offlineStorage.service';
 import { DatabaseService } from 'src/app/shared/services/database.service';
 import { ExportVaultService } from './exportVault.service';
 import { ImportVaultService } from './importVault.service';
@@ -33,6 +34,7 @@ import { Folder } from 'src/app/shared/entities/note';
 
 export class DataComponent {
   public readonly authService = inject(AuthService);
+  public readonly offlineStorage = inject(OfflineStorageService);
   private readonly _alertService = inject(AlertService);
   private readonly _databaseService = inject(DatabaseService);
   private readonly _exportService = inject(ExportVaultService);

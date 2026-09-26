@@ -7,7 +7,7 @@
     <p-tabs value="0">
         <p-tablist>
             <p-tab value="0">{{ 'data.exportTab' | translate }}</p-tab>
-            @if (this.authService.isBlocked() === false && this.authService.canManageNotes()) {
+            @if (this.authService.isBlocked() === false && this.authService.canManageNotes() && !this.offlineStorage.offlineMode()) {
                 <p-tab value="1">{{ 'data.importTab' | translate }}</p-tab>
             }
         </p-tablist>
@@ -102,7 +102,7 @@
                 </p-card>
             </p-tabpanel>
 
-            @if (this.authService.isBlocked() === false && this.authService.canManageNotes()) {
+            @if (this.authService.isBlocked() === false && this.authService.canManageNotes() && !this.offlineStorage.offlineMode()) {
             <p-tabpanel value="1">
                 <p-card>
                     <form class="flex flex-col w-full min-w-80" (submit)="this.OnImport($event)">

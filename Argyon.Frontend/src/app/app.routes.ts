@@ -3,6 +3,7 @@ import { AuthGuard } from './shared/guards/auth.guard';
 import { RoleGuard } from './shared/guards/role.guard';
 import { OwnerGuard } from './shared/guards/owner.guard';
 import { NotBlockedGuard } from './shared/guards/notBlocked.guard';
+import { OnlineGuard } from './shared/guards/online.guard';
 
 export const routes: Routes = [
     {
@@ -35,7 +36,7 @@ export const routes: Routes = [
             },
             {
                 path: 'about',
-                canActivate: [NotBlockedGuard],
+                canActivate: [NotBlockedGuard, OnlineGuard],
                 data: { titleKey: 'about.title' },
                 loadComponent() {
                     return import('./pages/main/pages/about/about.component').then(m => m.AboutComponent);
@@ -50,7 +51,7 @@ export const routes: Routes = [
             },
             {
                 path: 'users',
-                canActivate: [RoleGuard, NotBlockedGuard],
+                canActivate: [RoleGuard, NotBlockedGuard, OnlineGuard],
                 data: { titleKey: 'users.title' },
                 loadComponent() {
                     return import('./pages/main/pages/users/users.component').then(m => m.UsersComponent);
@@ -58,7 +59,7 @@ export const routes: Routes = [
             },
             {
                 path: 'system',
-                canActivate: [OwnerGuard, NotBlockedGuard],
+                canActivate: [OwnerGuard, NotBlockedGuard, OnlineGuard],
                 data: { titleKey: 'system.title' },
                 loadComponent() {
                     return import('./pages/main/pages/system/system.component').then(m => m.SystemComponent);

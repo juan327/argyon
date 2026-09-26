@@ -8,11 +8,14 @@ import { ButtonComponent } from "src/app/shared/components/button/button.compone
 import { DrawerModule } from 'primeng/drawer';
 import { TokenRefreshService } from 'src/app/shared/services/tokenRefresh.service';
 import { VaultLockService } from 'src/app/shared/services/vaultLock.service';
+import { OfflineStorageService } from 'src/app/shared/services/offlineStorage.service';
+import { OfflineBannerComponent } from "./partials/offlineBanner/offlineBanner.component";
+import { ConnectionErrorComponent } from "./partials/connectionError/connectionError.component";
 
 @Component({
   selector: 'app-main',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterModule, UnlockComponent, NavComponent, ButtonComponent, DrawerModule],
+  imports: [RouterModule, UnlockComponent, NavComponent, ButtonComponent, DrawerModule, OfflineBannerComponent, ConnectionErrorComponent],
   templateUrl: './main.component.html',
   host: {
     '(window:resize)': 'onResize($event)'
@@ -22,6 +25,7 @@ import { VaultLockService } from 'src/app/shared/services/vaultLock.service';
 export class MainComponent {
   public readonly thisService = inject(MainService);
   public readonly authService = inject(AuthService);
+  public readonly offlineStorage = inject(OfflineStorageService);
   private readonly _router = inject(Router);
   private readonly _tokenRefreshService = inject(TokenRefreshService);
   // Not otherwise referenced: injecting it here just instantiates the singleton so its
@@ -38,7 +42,9 @@ export class MainComponent {
       this.showSidebar.set(false);
     }
 
-    this._tokenRefreshService.start(this.authService.currentUser()?.accessTokenExpiryMinutes ?? 15);
+    if (this.offlineStorage.offlineMode() === false && this.offlineStorage.serverUnreachable() === false) {
+      this._tokenRefreshService.start(this.authService.currentUser()?.accessTokenExpiryMinutes ?? 15);
+    }
   }
 
   public onToggleSidebar() {
